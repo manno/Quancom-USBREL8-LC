@@ -1,0 +1,102 @@
+diff --git a/Makefile b/Makefile
+index b38a080..2b52a51 100644
+--- a/Makefile
++++ b/Makefile
+@@ -100,6 +100,7 @@ realclean: clean
+ 	rm -f *~ tags
+ 
+ install:
++	KERNELRELEASE_clean = $(uname -r)
+ 	mkdir -p $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE_clean)/usb
+ 	cp -p quancom_usb.ko $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE_clean)/usb
+ ifeq ($(RUNDM),y)
+diff --git a/quancom_usb.c b/quancom_usb.c
+index 4019a7c..fd1f40d 100644
+--- a/quancom_usb.c
++++ b/quancom_usb.c
+@@ -224,6 +224,9 @@
+ #include <linux/version.h>
+ 
+ #include "quancom.h"
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
++#include <linux/fs.h>
++#endif
+ 
+ #define VENDOR_QUANCOM 0xa7c
+ 
+@@ -248,9 +251,11 @@ static int debug = 0;
+         } while (0)
+ #if 0
+ #define err(format, arg...) printk(KERN_ERR "%s: " format "\n", MODNAME , ## arg)
+-#define info(format, arg...) printk(KERN_INFO "%s: " format "\n", MODNAME , ## arg)
+ #define warn(format, arg...) printk(KERN_WARNING "%s: " format "\n", MODNAME , ## arg)
+ #endif
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
++#define info(format, arg...) printk(KERN_INFO "%s: " format "\n", MODNAME , ## arg)
++#endif
+ 
+ /* static quancom_t quancom[MAXPORTS]; */
+ static int maxtime = TIMEOUT;
+@@ -290,7 +295,11 @@ static inline void quancom_delete (struct usb_quancom *dev);
+ static int quancom_fops_open(struct inode *inode, struct file *file);
+ static ssize_t quancom_fops_read(struct file *file, char *buf, size_t count, loff_t * ppos);
+ static ssize_t quancom_fops_write(struct file *file, const char *buf, size_t count, loff_t * ppos);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
++static long quancom_fops_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
++#else
+ static int quancom_fops_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long arg);
++#endif
+ 
+ /* Supported device IDs */
+ static struct usb_device_id quancom_ids [] = {
+@@ -346,7 +355,11 @@ static struct file_operations quancom_fops = {
+     .owner =	THIS_MODULE,
+     .read =		quancom_fops_read,
+     .write =	quancom_fops_write,
+-    .ioctl =	quancom_fops_ioctl,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
++    .unlocked_ioctl = quancom_fops_ioctl,
++#else
++    .ioctl = quancom_fops_ioctl,
++#endif
+     .open =		quancom_fops_open,
+     .release =	quancom_fops_release,
+ };
+@@ -392,7 +405,11 @@ static struct miscdevice watchdog_dev = {
+ 
+ 
+ /* prevent races between open() and disconnect() */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
++static DEFINE_SEMAPHORE (disconnect_sem);
++#else
+ static DECLARE_MUTEX (disconnect_sem);
++#endif
+ 
+ /* --------------------------------------------------------------------- */
+ 
+@@ -662,7 +679,11 @@ out:
+     return ret;
+ }
+ 
+-static int quancom_fops_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long arg)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
++static long quancom_fops_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++#else
++static inf quancom_fops_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long arg)
++#endif
+ {
+     struct usb_quancom *dev;
+     int ret = 0;
+@@ -1060,7 +1081,11 @@ static int quancom_probe (struct usb_interface *interface, const struct usb_devi
+ 
+     s->deviceid = deviceid;
+ 
+-    init_MUTEX (&s->sem);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,32)
++    sema_init (&s->sem, 1);
++#else
++    init_MUTEX(&s->sem);
++#endif
+     s->udev = usbdev;
+     s->interface = interface;
+     /* iface_desc = &interface->altsetting[0]; */
