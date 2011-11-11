@@ -14,7 +14,7 @@ module QAPI
   ffi_lib './libqlib.so'
   ffi_convention :stdcall
 
-  # CONSTANTS
+  # CONSTANTS (qlib.h)
   TRUE = 1
   FALSE = 0
   OUT1 = 0x1
@@ -26,7 +26,8 @@ module QAPI
   OUT7 = 0x40
   OUT8 = 0x80
 
-  # QAPIExtOpenCard
+  # QAPIExtOpenCard (quancom.h)
+  USBREL8 = 6
   USBREL8LC = 8
 
   # int QAPIExtOpenCard(ULONG device, ULONG module);
@@ -41,8 +42,11 @@ module QAPI
   # void  QAPIExtCloseCard(int handle);
   attach_function :closeCard, :QAPIExtCloseCard,[ :int ], :void
 
+end
+
 =begin
-  # no inputs on USBREL8LC
+
+== no inputs on USBREL8LC
   
   # QAPIExtSpecial
   JOB_READ_IN_FFS = 10
@@ -52,7 +56,17 @@ module QAPI
 
   # ULONG QAPIExtReadDI8 (int fd, ULONG channel, ULONG mode);
   attach_function :readDI8, :QAPIExtReadDI8,[ :int, :ulong, :ulong ], :ulong
-=end    
 
-end
+== not in qlib?
+
+  # ULONG QAPIPutDO ( ULONG cardid ULONG channel ULONG value );
+  # ULONG QAPINumOfCards (void);
+  # LPCARDDATAS QAPIGetCardInfo ( ULONG cardid );
+  # ULONG QAPIGetCardInfoEx( ULONG cardid LPCARDDATAS lpcd );
+  # ULONG QAPIExtNumOfCards (void);
+  # LPCARDDATAS QAPIExtGetCardInfo( ULONG cardid );
+  # ULONG QAPIExtGetCardInfoEx( ULONG cardid LPCARDDATAS lpcd );
+  # void QAPIExtReleaseCardInfo( LPCARDDATAS carddatas );
+
+=end
 
