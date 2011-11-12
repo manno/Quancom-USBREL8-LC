@@ -1,6 +1,11 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << './lib'
-require 'quancom-ffi'
+$TEST = true
+if $TEST
+    require 'quancom-test'
+else
+    require 'quancom-ffi'
+end
 
 # open card
 handle = QAPI.openCard QAPI::USBREL8LC, 0

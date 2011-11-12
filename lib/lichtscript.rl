@@ -73,6 +73,12 @@ module Licht
         @controller.addOffCommand( outputs, time_delay, time_duration )
       }
 
+      action CommandSet {
+        labels.each { |l| outputs << @label_lookup[l] }
+        labels.clear
+        @controller.addSetCommand( outputs, time_delay, time_duration )
+      }
+
       action CommandName {
         puts "[   ] Label relay" if $VERBOSE
         label = labels.pop
@@ -110,7 +116,10 @@ module Licht
       command_off  = ws0 'turn off' ws1 relay_name_list_off time_selector ws0 '\n'
         @CommandOff;
 
-      main := ( /^#.*/ | command_name | command_on | command_off );
+      command_set  = ws0 'set relay to' ws1 relay_name_list_on time_selector ws0 '\n'
+        @CommandSet;
+
+      main := ( /^#.*/ | command_name | command_on | command_off | command_set );
 
     }%%
 
@@ -152,7 +161,7 @@ module Licht
 
       if $DEBUG
         puts "Display actions"
-        licht.actions
+        licht.actions.each { |a| p a }
       end
 
       return licht

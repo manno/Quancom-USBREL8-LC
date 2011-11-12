@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 require 'ffi'
+require 'quancom'
 
 =begin
 
@@ -10,37 +11,11 @@ TODO find shared object?
 =end
 
 module QAPI
+  include QuancomConstants
   extend FFI::Library
   ffi_lib './libqlib.so'
   ffi_convention :stdcall
 
-  # CONSTANTS (qlib.h)
-  TRUE = 1
-  FALSE = 0
-  MAXDEVICES = 8
-  OUT1 = 0x1
-  OUT2 = 0x2
-  OUT3 = 0x4
-  OUT4 = 0x8
-  OUT5 = 0x10
-  OUT6 = 0x20
-  OUT7 = 0x40
-  OUT8 = 0x80
-  ALL  = OUT1+OUT2+OUT3+OUT4+OUT5+OUT6+OUT7+OUT8
-  NONE = 0
-
-  # QAPIExtOpenCard (quancom.h)
-  USBREL8 = 6
-  USBREL8LC = 8
-
-  # QAPIExtSpecial
-  JOB_GET_DEVICEID          = 2
-  JOB_READ_IN_FFS           = 10
-  JOB_ENABLE_TIMEOUT        = 11
-  JOB_DISABLE_TIMEOUT       = 12
-  JOB_RESET_TIMEOUT_STATUS  = 13
-  JOB_READ_TIMEOUT_STATUS   = 14
-  JOB_TIMEOUT               = 92
 
   # ULONG QAPIExtSpecial(int fd, ULONG jobcode, ULONG para1, ULONG para2);
   attach_function :special, :QAPIExtSpecial,[ :int, :ulong, :ulong, :ulong ], :ulong

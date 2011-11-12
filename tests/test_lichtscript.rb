@@ -15,7 +15,12 @@ turn off output 1, Bathroom, output 2
 turn on Bathroom
 turn on Bathroom in 5 minutes for 45 seconds
 turn on Bathroom in 1 hour 
+set relay to output 1, Bathroom, output 2
 EOF
 
 licht = Licht::Script.load( script )
-pp licht
+handle = 0
+licht.actions.each { |a|
+  p a
+  a.execute handle
+}

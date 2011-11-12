@@ -4,7 +4,12 @@ execute, log, edit, display commands
 
 =end
 
-#require 'quancom-ffi'
+$TEST = true
+if $TEST
+  require 'quancom-test'
+else
+  require 'quancom-ffi'
+end
 require 'pp'
 
 module Licht
@@ -22,14 +27,12 @@ module Licht
     attr_reader :type, :outputs, :delay, :duration
 
     def parse_outputs( outputs )
-      # translate
-      # ALL - QAPI::ALL
-      # 1 - QAPI::OUT1
+      # translate relay number to bit position
+      # 3 -> 0x4
       outputs.each { |o|
         case o
         when 'ALL'
-          #@outputs = [ QAPI::ALL ]
-          @outputs = [ 255 ]
+          @outputs = [ QAPI::ALL ]
           break
         else
           val =  1 << o-1
@@ -42,6 +45,24 @@ module Licht
     def output_mask
       val = 0
       @outputs.each { |o| val += o } 
+      val
+    end
+
+    def execute( handle )
+      # time related, handled by daemon
+      case @type
+      when :set
+        QAPI.writeDO16 handle, output_mask, 0
+      when :on
+        @outputs.each { |o|
+          QAPI.writeDO1 handle, o-1, QAPI::TRUE, 0
+        }
+      when :off
+        @outputs.each { |o|
+          QAPI.writeDO1 handle, o-1, QAPI::FALSE, 0
+        }
+      end
+      
     end
   end
 
@@ -63,11 +84,10 @@ module Licht
       pp @actions[-1] if $DEBUG
     end
 
-    def execute
-      # TODO time related, handled by daemon
-    end
-
-    def modify
+    def addSetCommand( outputs, time_delay_off, time_duration )
+      puts "[   ] Add action SET" if $VERBOSE
+      @actions << Action.new( :set, outputs, time_delay_off, time_duration )
+      pp @actions[-1] if $DEBUG
     end
 
   end

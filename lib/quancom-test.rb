@@ -7,19 +7,19 @@ module QAPI
   include QuancomConstants
   
   def QAPI.special( *args )
-    pp args
+    puts "special( #{args.join(', ')} )"
   end
   def QAPI.openCard( *args )
-    pp args
+    puts "openCard( #{args.join(', ')} )"
     1
   end
   def QAPI.writeDO1( *args )
-    pp args
+    puts "writeDO1( #{args.join(', ')} )"
   end
   def QAPI.writeDO16( *args )
-    pp args
+    puts "writeDO16( #{args.join(', ')} )"
   end
   def QAPI.closeCard( *args )
-    pp args
+    puts "closeCard( #{args.join(', ')} )"
   end
 end
