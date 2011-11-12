@@ -25,10 +25,19 @@ module QAPI
   OUT6 = 0x20
   OUT7 = 0x40
   OUT8 = 0x80
+  ALL  = 1
+  NONE = 0
 
   # QAPIExtOpenCard (quancom.h)
   USBREL8 = 6
   USBREL8LC = 8
+
+  # QAPIExtSpecial
+  JOB_READ_IN_FFS = 10
+  JOB_GET_DEVICEID = 2
+
+  # ULONG QAPIExtSpecial(int fd, ULONG jobcode, ULONG para1, ULONG para2);
+  attach_function :special, :QAPIExtSpecial,[ :int, :ulong, :ulong, :ulong ], :ulong
 
   # int QAPIExtOpenCard(ULONG device, ULONG module);
   attach_function :openCard, :QAPIExtOpenCard,[ :ulong, :ulong ], :int
@@ -48,12 +57,6 @@ end
 
 == no inputs on USBREL8LC
   
-  # QAPIExtSpecial
-  JOB_READ_IN_FFS = 10
-
-  # ULONG QAPIExtSpecial(int fd, ULONG jobcode, ULONG para1, ULONG para2);
-  attach_function :special, :QAPIExtSpecial,[ :int, :ulong, :ulong, :ulong ], :ulong
-
   # ULONG QAPIExtReadDI8 (int fd, ULONG channel, ULONG mode);
   attach_function :readDI8, :QAPIExtReadDI8,[ :int, :ulong, :ulong ], :ulong
 
