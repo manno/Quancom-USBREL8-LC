@@ -151,16 +151,16 @@ module Licht
       licht = Licht::ActionStack.new
       Licht::Parser.setup( licht )
 
-      puts "Parsing commands" if $VERBOSE
+      puts "[ ] Parsing commands:" if $VERBOSE
       i=1
       input.each_line { |l| 
-        print "[ > ] Line #{i}: #{l}" if $VERBOSE
+        print "[>] Line #{i}: #{l}" if $VERBOSE
         Licht::Parser.parse(l)
         i += 1
       }
 
       if $DEBUG
-        puts "Display actions"
+        puts "[   ] Display actions:"
         licht.actions.each { |a| p a }
       end
 
