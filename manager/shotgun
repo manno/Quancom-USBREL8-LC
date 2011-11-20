@@ -1,0 +1,14 @@
+#!/usr/bin/ruby
+
+require 'rubygems'
+
+version = ">= 0"
+
+if ARGV.first =~ /^_(.*)_$/ and Gem::Version.correct? $1 then
+  version = $1
+  ARGV.shift
+end
+
+gem 'shotgun', version
+load Gem.bin_path('shotgun', 'shotgun', version)
+

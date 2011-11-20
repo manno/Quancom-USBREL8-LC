@@ -1,0 +1,53 @@
+!!!
+%html
+  %head
+    %title empty
+    %link(rel="stylesheet" href="styles.css")
+  %body
+    %h1 Steuerung
+    %p== Untertitel  
+    %p
+      %p= @message
+
+    %h2 Relays
+    %table{:width => "80%", :style => "border: 1px solid"}
+      %tr
+        %th id
+        %th state
+      %tbody
+        - @relays.each do |row|
+          %tr
+            %td= row[0]
+            %td= row[1]
+    %h2 Configured Rules
+    %table{:width => "80%", :style => "border: 1px solid"}
+      %tr
+        %th type
+        %th active
+        %th script
+        %th created
+        %th actions
+      %tbody
+        - @rules.each do |row|
+          %tr
+            %td= row.type
+            %td= row.active
+            %td= row.script.name
+            %td= row.created_at
+            %td 
+              %a(href)
+    %h2 Available Scripts
+    %table{:width => "80%", :style => "border: 1px solid"}
+      %tr
+        %th name
+        %th created
+        %th actions
+      %tbody
+        - @scripts.each do |row|
+          %tr
+            %td= row.name
+            %td= row.created_at
+            %td
+              %a(href)
+
+

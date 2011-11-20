@@ -1,0 +1,2 @@
+require 'MainWebApp'
+run MainWebApp
