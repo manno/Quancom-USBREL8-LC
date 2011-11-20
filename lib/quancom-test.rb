@@ -5,21 +5,42 @@ require 'pp'
 # 
 module QAPI
   include QuancomConstants
+  URL = 'druby://:9004'
   
   def QAPI.special( *args )
     puts "special( #{args.join(', ')} )"
   end
+
   def QAPI.openCard( *args )
     puts "openCard( #{args.join(', ')} )"
-    1
+    DRb.start_service()
+    begin
+    @simulator = DRbObject.new nil, URL
+    rescue
+      puts "failed to connect to simulator"
+      return false
+    end
+    return true
   end
-  def QAPI.writeDO1( *args )
-    puts "writeDO1( #{args.join(', ')} )"
+
+  def QAPI.writeDO1( handle, relay, state, arg )
+    puts "writeDO1( #{handle}, #{relay}, #{state}, #{arg} )"
+    @simulator.setOut( relay+1, state )
   end
-  def QAPI.writeDO16( *args )
-    puts "writeDO16( #{args.join(', ')} )"
+
+  def QAPI.writeDO16( handle, output_mask, arg )
+    puts "writeDO16( #{handle}, #{output_mask}, #{arg} )"
+    (1..8).each { |i| 
+      if i >> output_mask == 0
+        @simulator.setOut( i, true )
+      else
+        @simulator.setOut( i, false )
+      end
+    }
   end
+
   def QAPI.closeCard( *args )
     puts "closeCard( #{args.join(', ')} )"
+    @simulator = nil
   end
 end

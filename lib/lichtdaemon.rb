@@ -6,12 +6,11 @@ require 'lichtscript'
 #
 # add RPC for simple control of relays
 #
-# load several Licht::ActionStacks with Licht::Action from lichtcontrol
+# load several Licht::ActionStack containing Licht::Action from lichtcontrol
 #  using Licht::Script.load
 #
-# assign Licht::Rule to every script (start time, execution probability, ...)
-# add custom shutoff rule: clears all rules, inclusive timers from stack
-#   so nothing executes thereafter
+# assign Licht::ActionRule to every script (start time, execution probability, ...)
+# add custom shutoff rule: Licht::ClearQueueAction, which clears timers from queue
 #
 # execute scripts according to Licht::Rules every n minutes
 #
@@ -23,20 +22,26 @@ module Licht
   class Daemon
 
     def initialize
+      #@intervall = 60
       @intervall = 3
-      @actionstacks = {}
+      @actions = {}
       @rules = {}
+      @queue = []
+      @cardHandle = 0
 
       start_thread
     end
+    attr_reader :cardHandle
+    attr_writer :cardHandle
 
-    def addActionStack( actionId, stack )
-      puts "[ ] add actionstack: #{ actionId }" if $VERBOSE
-      @actionstacks[actionId] = stack
+    def addAction( actionId, action )
+      puts "[ ] add action: #{ actionId }" if $VERBOSE
+      @actions[actionId] = action
     end
 
-    def removeActionStack( actionId )
-      @actionstacks.delete( actionId )
+    def removeAction( actionId )
+      puts "[ ] remove action: #{ actionId }" if $VERBOSE
+      @actions.delete( actionId )
     end
 
     def addRule( actionId, rule )
@@ -45,31 +50,85 @@ module Licht
     end
     
     def removeRule( actionId )
+      puts "[ ] remove rule from: #{ actionId }" if $VERBOSE
       @rules.delete( actionId )
     end
 
+    def add( actionId, action, rule )
+      puts "[ ] add action/rule id: #{ actionId }" if $VERBOSE
+      addAction( actionId, action )
+      addRule( actionId, rule )
+    end
+
     def remove( actionId )
-      puts "[ ] remove id: #{ actionId }" if $VERBOSE
+      puts "[ ] remove action/rule id: #{ actionId }" if $VERBOSE
       removeRule( actionId )
-      removeActionStack( actionId )
+      removeAction( actionId )
+    end
+
+    def clear
+      @actions = {}
+      @rules = {}
+      @queue = []
     end
 
     def status
       return @rules.collect { |id, rule|
-        "  #{id}:\n" +  @actionstacks[id].to_s
+        "  #{id}:\n" +  @actions[id].to_str
       }.join( "\n" )
     end
 
     def wakeup
       time = Time.now.to_i
       puts "[ ] wakeup at #{ time }" if $VERBOSE
+      p @queue
 
+      # queue actions
       @rules.each { |id, rule| 
         if rule.apply(time) 
-          actionstack = @actionstacks[id]
+          action = @actions[id]
           puts "[=] hit #{id}"
-          #actionstack.actions.each { |a| #}
+          # queue actions if this is a actionstack
+          #   or clear queue if this is a queue clear action
+          if action.respond_to?( 'actions' )
+            action.actions.each { |a| 
+              # put action in queue
+              @queue << { :at => time + a.delay, :action => a }
+              # queue appropiate stop action in delay+duration s if duration > 0
+              if a.duration > 0
+                @queue << { :at => time + a.delay + a.duration, :action => a.invert }
+              end
+            }
+          else
+            # this is a ClearQueueAction
+            @queue = []
+            break
+          end
         end
+      }
+
+      # anything to execute?
+      todo = []
+      @queue.each_index { |i|
+        # FIXME tolerance?
+        difference = time - @queue[i][:at]
+        if difference < 2 and difference > -2
+          todo << i
+        end
+      }
+
+      # execute queued actions
+      if not todo.empty?
+        handle = QAPI.openCard QAPI::USBREL8LC, @cardHandle
+        todo.each { |i|
+          @queue[i][:action].execute( handle )
+        }
+        QAPI.closeCard handle
+      end
+
+      # remove finished actions from queue
+      todo.reverse.each { |i|
+        @queue.delete_at( i )
       }
     end
 

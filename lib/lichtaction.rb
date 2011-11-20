@@ -14,8 +14,6 @@ require 'pp'
 
 module Licht
   class Action
-    #include QAPI
-    #QAPI::OUT1
 
     def initialize( type, outputs, delay, duration )
       @type = type
@@ -25,6 +23,7 @@ module Licht
       @duration = duration
     end
     attr_reader :type, :outputs, :delay, :duration
+    attr_writer :type
 
     def parse_outputs( outputs )
       # translate relay number to bit position
@@ -64,7 +63,18 @@ module Licht
       end
     end
 
-    def to_s
+    def invert
+      new = self.clone
+      case @type
+      when :on
+        new.type = :off
+      when :off
+        new.type = :on
+      end
+      return new
+    end
+
+    def to_str
       case @type
       when :set
         return "    QAPI.writeDO16 handle, #{output_mask}, 0\n"
@@ -81,6 +91,8 @@ module Licht
 
   end
 
+  # List of actions
+  #
   class ActionStack
     def initialize
       @actions = []
@@ -105,10 +117,19 @@ module Licht
       pp @actions[-1] if $DEBUG
     end
 
-    def to_s
-      return @actions.collect { |a| "  "+ a.to_s }.join( "\n" )
+    def to_str
+      return @actions.collect { |a| "  "+ a.to_str }.join( "\n" )
     end
 
+  end
+
+  # Clear Queue Action
+  # 
+  class ClearQueueAction
+    # contains nothing really
+    def to_str
+      return "clear queue action"
+    end
   end
 
   # When to execute the action
@@ -141,7 +162,7 @@ module Licht
       # FIXME does this work?
       p = rand(100)
       difference = @time - time
-      if p < @chance and  difference < 3 and difference > 0
+      if p < @chance and  difference < 2 and difference > -2
         return true
       end
     end
