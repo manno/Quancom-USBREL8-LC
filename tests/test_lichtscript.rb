@@ -18,8 +18,13 @@ turn on Bathroom in 1 hour
 set relay to output 1, Bathroom, output 2
 EOF
 
+
 licht = Licht::Script.load( script )
-handle = 0
+
+#handle = QAPI.openCard QAPI::USBREL8LC, 0
+#exit unless handle > -1
+handle = 1
+
 licht.actions.each { |a|
   p a
   a.execute handle

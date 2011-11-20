@@ -14,7 +14,7 @@ require 'lichtscript'
 #
 # execute scripts according to Licht::Rules every n minutes
 #
-# keep state of all executed commands in log/db
+# TODO keep state of all executed commands in log/db
 $VERBOSE = true
 
 module Licht
@@ -34,16 +34,20 @@ module Licht
     attr_reader :cardHandle
     attr_writer :cardHandle
 
-    def addAction( actionId, action )
+    # add Script::ActionStack
+    #
+    def addScript( actionId, action )
       puts "[ ] add action: #{ actionId }" if $VERBOSE
       @actions[actionId] = action
     end
 
-    def removeAction( actionId )
+    def removeScript( actionId )
       puts "[ ] remove action: #{ actionId }" if $VERBOSE
       @actions.delete( actionId )
     end
 
+    # add Script::Rule::*
+    #
     def addRule( actionId, rule )
       puts "[ ] add rule: #{ actionId }" if $VERBOSE
       @rules[actionId] = rule
@@ -56,14 +60,14 @@ module Licht
 
     def add( actionId, action, rule )
       puts "[ ] add action/rule id: #{ actionId }" if $VERBOSE
-      addAction( actionId, action )
+      addScript( actionId, action )
       addRule( actionId, rule )
     end
 
     def remove( actionId )
       puts "[ ] remove action/rule id: #{ actionId }" if $VERBOSE
       removeRule( actionId )
-      removeAction( actionId )
+      removeScript( actionId )
     end
 
     def clear
@@ -81,7 +85,7 @@ module Licht
     def wakeup
       time = Time.now.to_i
       puts "[ ] wakeup at #{ time }" if $VERBOSE
-      p @queue
+      #p @queue
 
       # queue actions
       @rules.each { |id, rule| 

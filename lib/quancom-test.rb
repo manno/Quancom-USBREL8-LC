@@ -1,4 +1,5 @@
 require 'quancom'
+require 'drb'
 require 'pp'
 
 # emulate quancom ffi lib
@@ -13,23 +14,25 @@ module QAPI
 
   def QAPI.openCard( *args )
     puts "openCard( #{args.join(', ')} )"
-    DRb.start_service()
+    DRb.start_service
     begin
-    @simulator = DRbObject.new nil, URL
+      @simulator = DRbObject.new nil, URL
     rescue
-      puts "failed to connect to simulator"
-      return false
+      STDERR.puts "[!] failed to connect to simulator"
+      return -1
     end
-    return true
+    return 1
   end
 
   def QAPI.writeDO1( handle, relay, state, arg )
     puts "writeDO1( #{handle}, #{relay}, #{state}, #{arg} )"
-    @simulator.setOut( relay+1, state )
+    return unless defined? @simulator
+    @simulator.setOut( relay, state )
   end
 
   def QAPI.writeDO16( handle, output_mask, arg )
     puts "writeDO16( #{handle}, #{output_mask}, #{arg} )"
+    return unless defined? @simulator
     (1..8).each { |i| 
       if i >> output_mask == 0
         @simulator.setOut( i, true )

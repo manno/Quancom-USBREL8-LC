@@ -3,6 +3,8 @@ all:
 
 ragel:
 	ragel -s -R lib/lichtscript.rl
+	# ragel 6.6 and ruby 1.9 fix
+	perl -pi -e 's/data\[p]/data[p].ord/g' lib/lichtscript.rb
 
 test: ragel
 	ruby -d tests/test_qapi.rb

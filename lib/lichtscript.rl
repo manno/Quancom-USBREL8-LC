@@ -1,7 +1,7 @@
 # vim: ft=ragel
 require 'lichtaction.rb'
 
-$VERBOSE=false
+$VERBOSE=true
 $DEBUG=false
 
 module Licht
@@ -148,7 +148,7 @@ module Licht
   module Script
     def Script.load( input )
       include Licht::Parser
-      licht = Licht::ActionStack.new
+      licht = Licht::Script::ActionStack.new
       Licht::Parser.setup( licht )
 
       puts "[ ] Parsing commands:" if $VERBOSE
