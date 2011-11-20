@@ -1,6 +1,7 @@
 $LOAD_PATH << './lib'
 require "drb"
 require 'lichtscript'
+require 'datamapper'
 
 # run as daemon
 #
@@ -19,6 +20,36 @@ $VERBOSE = true
 
 module Licht
 
+  class Logger
+    class Relay
+      include DataMapper::Resource
+      property :id, Integer
+      property :state, Boolean
+    end
+    def initialize
+      DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/db_relays.db")
+      migrate
+    end
+    def migrate
+      unless Relay.storage_exists?
+        Relay.auto_migrate! 
+        (1..8).each { |id|
+          relay = Relay.new :id => id
+          relay.state = false
+          relay.save
+        }
+      end 
+    end
+    def setOut(id, state)
+      relay = Relay.new :id => id
+      relay.state = false
+      relay.update :state => state 
+    end
+    def getState
+      Relay.all
+    end
+  end
+
   class Daemon
 
     def initialize
@@ -28,6 +59,8 @@ module Licht
       @rules = {}
       @queue = []
       @cardHandle = 0
+
+      @logger = Logger.new
 
       start_thread
     end
@@ -82,6 +115,10 @@ module Licht
       }.join( "\n" )
     end
 
+    def getRelayState
+      @logger.getState
+    end
+
     def wakeup
       time = Time.now.to_i
       puts "[ ] wakeup at #{ time }" if $VERBOSE
@@ -121,11 +158,12 @@ module Licht
         end
       }
 
-      # execute queued actions
+      # execute and log queued actions
       if not todo.empty?
         handle = QAPI.openCard QAPI::USBREL8LC, @cardHandle
         todo.each { |i|
           @queue[i][:action].execute( handle )
+          @queue[i][:action].log_execute( @logger )
         }
         QAPI.closeCard handle
       end
