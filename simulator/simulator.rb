@@ -5,13 +5,12 @@ require "drb"
 
 PROG_NAME = 'quancom simulator'
 URL = 'druby://:9004'
-DEFAULT_GLADE_FILENAME = 'gui.glade'
-DEFAULT_GLADE = File.join( 'simulator', DEFAULT_GLADE_FILENAME )
+DEFAULT_GLADE = 'gui.glade'
 DEFAULT_IMAGE = "usbrel8.gif"
 
-glade_file = DEFAULT_GLADE_FILENAME
+resource_path = './simulator'
 if( File.readable? DEFAULT_GLADE )
-  glade_file = DEFAULT_GLADE
+  resource_path = '.'
 end
 
 module Licht
@@ -25,11 +24,11 @@ module Licht
   class Controller
     include Callbacks
 
-    def initialize( glade_file )
-      #@glade = GladeXML.new(glade_file, nil, PROG_NAME, nil, GladeXML::FILE) {|handler| method(handler)}
+    def initialize( resource_path )
+      @resource_path = resource_path
       @builder = Gtk::Builder.new
-      @builder.add_from_file( glade_file )
-      @builder.connect_signals { |handler| method(handler) }
+      @builder.add_from_file( File.join( @resource_path, DEFAULT_GLADE ))
+      @builder.connect_signals { |handler| method( handler ) }
     end
     attr_reader :builder
 
@@ -37,8 +36,13 @@ module Licht
       trap('INT') { self.quit }
       DRb.start_service URL, self
       #DRb.thread.join
-      img = Gdk::Pixbuf.new(DEFAULT_IMAGE, 200, 200)
-      @builder["image1"].pixbuf = img
+      
+      image_path = File.join( @resource_path, DEFAULT_IMAGE )
+      if File.readable? image_path
+        img = Gdk::Pixbuf.new( image_path, 200, 200 )
+        @builder["image1"].pixbuf = img
+      end
+
       reset_outputs
     end
 
@@ -65,7 +69,7 @@ module Licht
 end
 
 Gtk.init
-@gui = Licht::Simulator::Controller.new(glade_file)
+@gui = Licht::Simulator::Controller.new( resource_path )
 @gui.setup
 @gui.builder['window1'].show
 Thread.start {
