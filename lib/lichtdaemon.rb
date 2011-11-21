@@ -26,10 +26,12 @@ module Licht
       property :id, Integer, :key => true
       property :state, Boolean
     end
+
     def initialize
       DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/db_relays.db")
       migrate
     end
+
     def migrate
       unless Relay.storage_exists?
         Relay.auto_migrate! 
@@ -40,13 +42,19 @@ module Licht
         }
       end 
     end
+
     def setOut(id, state)
       relay = Relay.new :id => id
       relay.state = false
       relay.update :state => state 
     end
+
     def getState
-      Relay.all
+      state = {}
+      Relay.all.each { |row|
+        state[ row.id ] = row.state
+      }
+      state
     end
   end
 
