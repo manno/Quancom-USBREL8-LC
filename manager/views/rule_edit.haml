@@ -1,0 +1,51 @@
+%form{:method => 'post', :action => "/rule#{ @rule ? '/'+ @rule.id.to_s : '' }"}
+  
+  %fieldset
+    %ul{:style => 'list-style: none;'}
+      %li
+        %input{:type => "radio", :name => "data[type]", :value => "clear", :checked => @data[:type] == 'clear'}
+        %label{:for => "type"} Clear Rules Action
+      %br
+      %li
+        %input{:type => "radio", :name => "data[type]", :value => "interval", :checked => @data[:type] == 'interval'}
+        %label{:for => "type"} Interval Rule
+        %table{:width => "80%", :style => "border: 1px solid"}
+          %tr
+            %td
+              %label{:for => "data[interval_chance]"} Chance
+            %td
+              %input{:type => "textbox", :name => "data[interval_chance]", :value => @data[:interval_chance]} %
+            %td
+              %label{:for => "data[interval_interval]"} Interval in seconds
+            %td
+              %input{:type => "textbox", :name => "data[interval_interval]", :value => @data[:interval_interval]} s
+      %br
+      %li
+        %input{:type => "radio", :name => "data[type]", :value => "pit", :checked => @data[:type] == 'pit'}
+        %label{:for => "type"} Point in Time Rule
+        %table{:width => "80%", :style => "border: 1px solid"}
+          %tr
+            %td
+              %label{:for => "data[pit_chance]"} Chance
+            %td
+              %input{:type => "textbox", :name => "data[pit_chance]", :value => @data[:pit_chance]} %
+            %td
+              %label{:for => "data[pit_execute_at]"} Time and Date
+            %td
+              %input{:type => "textbox", :name => "data[pit_execute_at]", :value => @data[:pit_execute_at]} 
+      %br
+      %li
+        %input{:type => "radio", :name => "data[type]", :value => "tod", :checked => @data[:type] == 'tod'}
+        %label{:for => "type"} Time of Day Rule
+        %table{:width => "80%", :style => "border: 1px solid"}
+          %tr
+            %td
+              %label{:for => "data[tod_chance]"} Chance
+            %td
+              %input{:type => "textbox", :name => "data[tod_chance]", :value => @data[:tod_chance]} %
+            %td
+              %label{:for => "data[tod_execute_at]"} Time and Date
+            %td
+              %input{:type => "textbox", :name => "data[tod_execute_at]", :value => @data[:tod_execute_at]} 
+    %input{:type => :submit, :value => "Submit"}
+

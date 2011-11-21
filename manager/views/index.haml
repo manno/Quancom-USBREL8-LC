@@ -1,24 +1,29 @@
 !!!
 %html
   %head
-    %title empty
+    %title Relay Steuerung
     %link(rel="stylesheet" href="styles.css")
   %body
-    %h1 Steuerung
-    %p== Untertitel  
+    %h1 Qualcom Relay Steuerung
     %p
       %p= @message
 
     %h2 Relays
     %table{:width => "80%", :style => "border: 1px solid"}
       %tr
-        %th id
-        %th state
+        %th 1
+        %th 2
+        %th 3
+        %th 4
+        %th 5
+        %th 6
+        %th 7
+        %th 8
       %tbody
-        - @relays.each do |row|
-          %tr
-            %td= row[0]
-            %td= row[1]
+        %tr{ :align => "center" }
+          - @relays.each do |row|
+            %td= row.state
+
     %h2 Configured Rules
     %table{:width => "80%", :style => "border: 1px solid"}
       %tr
@@ -32,10 +37,15 @@
           %tr
             %td= row.type
             %td= row.active
-            %td= row.script.name
+            %td= row.script ? row.script.name : 'none'
             %td= row.created_at
             %td 
-              %a(href)
+              %a(href="/form/rule/#{row.id}") edit
+              %a(href="/form/rule/delete/#{row.id}") delete
+              %a(href="/form/rule/assign/#{row.id}") assign a script
+              %a(href="/form/rule/assign/#{row.id}") #{row.active ? "deactivate" : "activate"}
+    %a(href="/form/rule") create new rule
+
     %h2 Available Scripts
     %table{:width => "80%", :style => "border: 1px solid"}
       %tr
@@ -49,5 +59,6 @@
             %td= row.created_at
             %td
               %a(href)
+    %a(href="/form/script") create new script
 
 
