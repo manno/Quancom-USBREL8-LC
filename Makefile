@@ -20,7 +20,7 @@ run_daemon: ragel
 
 run_web:
 	#cd manager && ruby MainWebApp.rb
-	cd manager && rackup -p 4567
+	cd manager && rackup -p 4567 -o 0.0.0.0 --env production
 
 run_web_dev:
-	cd manager && ./shotgun -p 4567
+	cd manager && ./shotgun -p 4567 -o 0.0.0.0

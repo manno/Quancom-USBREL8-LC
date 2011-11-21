@@ -60,8 +60,6 @@ module Webapp
 
     def status
       begin
-        @client.status
-      rescue DRb::DRbConnError
         STDERR.puts "[!] Failed to connect to drb daemon #{@url}" if $DEBUG
       end
     end

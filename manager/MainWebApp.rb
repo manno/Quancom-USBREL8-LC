@@ -1,11 +1,11 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 require 'rubygems'
 require 'sinatra'
 require 'haml'
 require 'pp'
 
-require "./lib/daemon_client"
 require "./lib/helpers"
+require "./lib/daemon_client"
 
 =begin
 
@@ -24,7 +24,8 @@ class MainWebApp < Sinatra::Base
     # drb client
     @relays = []
     @daemon_client = Webapp::DaemonClient.new
-    @daemon_client.init_from_db Rule.all
+
+
   end
 
   # list all rules, scripts and relays
@@ -49,12 +50,12 @@ class MainWebApp < Sinatra::Base
     haml :error
   end
 
-  # moved to config.ru layout
-  # one app, multiple files
-  #use Webapp::RoutesRules
-  #use Webapp::RoutesScripts
-  # start if run directly
-  #run! if app_file == $0
+  configure do
+    puts "################################ EXECUTE ONLY ONCE  #################"
+
+    daemon_client = Webapp::DaemonClient.new
+    daemon_client.init_from_db Rule.all
+  end
 
 end
 

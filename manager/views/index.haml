@@ -33,7 +33,7 @@
             %td= type_to_name row.type
             %td= row.active
             %td= row.script ? row.script.name : '-'
-            %td= row.created_at
+            %td= row.created_at.strftime("%Y-%m-%d %H:%M:%S")
             %td 
               %a(href="/rule/form/#{row.id}") edit
               |
@@ -54,7 +54,7 @@
         - @scripts.each do |row|
           %tr
             %td= row.name
-            %td= row.created_at
+            %td= row.created_at.strftime("%Y-%m-%d %H:%M:%S")
             %td
               %a(href="/script/form/#{row.id}") edit
               %a(href="/script/form/delete/#{row.id}") delete

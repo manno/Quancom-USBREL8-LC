@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'sinatra'
-
 require 'data_mapper'
 require "./lib/model"
 
@@ -8,15 +7,11 @@ require './MainWebApp'
 require "./lib/routes_rules"
 require "./lib/routes_scripts"
 
-#enable :logging
+@silent = nil
+
 set :port, 4567
-set :environment, :development  
-
-# this is needed for Routes* ?
-enable :sessions
-configure(:development) { set :session_secret, "RygVoohec2" }
-
-#run MainWebApp
+#enable :logging
+#set :environment, :development
 
 map "/" do
   run MainWebApp

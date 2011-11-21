@@ -71,8 +71,8 @@ module Webapp
       @rule = Rule.get params[:id]
       @script = Script.get params[:script_id]
       @rule.script = @script
-      @rule.save
       daemon_disable_rule @rule
+      @rule.save
       set_message "successfully assigned rule #{@rule.id} to script #{@script.id}"
       redirect "/"
     end
@@ -113,6 +113,7 @@ module Webapp
     helpers do
   
       def daemon_disable_rule( rule )
+        pp rule
         if rule.active
           rule.active = false
           @daemon_client.remove rule

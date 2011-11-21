@@ -1,7 +1,7 @@
 # vim: ft=ragel
 require 'lichtaction.rb'
 
-$VERBOSE=true
+$_VERBOSE=true
 $DEBUG=false
 
 module Licht
@@ -80,7 +80,7 @@ module Licht
       }
 
       action CommandName {
-        puts "[   ] Label relay" if $VERBOSE
+        puts "[   ] Label relay" if $_VERBOSE
         label = labels.pop
         output = outputs.pop
         @label_lookup[label] = output
@@ -151,10 +151,10 @@ module Licht
       licht = Licht::Script::ActionStack.new
       Licht::Parser.setup( licht )
 
-      puts "[ ] Parsing commands:" if $VERBOSE
+      puts "[ ] Parsing commands:" if $_VERBOSE
       i=1
       input.each_line { |l| 
-        print "[>] Line #{i}: #{l}" if $VERBOSE
+        print "[>] Line #{i}: #{l}" if $_VERBOSE
         Licht::Parser.parse(l)
         i += 1
       }

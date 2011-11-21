@@ -15,8 +15,8 @@ require 'data_mapper'
 #
 # execute scripts according to Licht::Rules every n minutes
 #
-# TODO keep state of all executed commands in log/db
-$VERBOSE = true
+# keeps state of all executed commands in log/db
+$_VERBOSE = true
 
 module Licht
 
@@ -78,31 +78,31 @@ module Licht
     # add Script::ActionStack
     #
     def addScript( actionId, action )
-      puts "[ ] add action: #{ actionId }" if $VERBOSE
+      puts "[ ] add action: #{ actionId }" if $_VERBOSE
       @actions[actionId] = action
     end
 
     def removeScript( actionId )
-      puts "[ ] remove action: #{ actionId }" if $VERBOSE
+      puts "[ ] remove action: #{ actionId }" if $_VERBOSE
       @actions.delete( actionId )
     end
 
     # add Script::Rule::*
     #
     def addRule( actionId, rule )
-      puts "[ ] add rule: #{ actionId }" if $VERBOSE
+      puts "[ ] add rule: #{ actionId }" if $_VERBOSE
       @rules[actionId] = rule
     end
     
     def removeRule( actionId )
-      puts "[ ] remove rule from: #{ actionId }" if $VERBOSE
+      puts "[ ] remove rule from: #{ actionId }" if $_VERBOSE
       @rules.delete( actionId )
     end
 
     # Drb
     #
     def add( actionId, action, rule )
-      puts "[ ] add action/rule id: #{ actionId }" if $VERBOSE
+      puts "[ ] add action/rule id: #{ actionId }" if $_VERBOSE
       addScript( actionId, action )
       addRule( actionId, rule )
     end
@@ -110,7 +110,7 @@ module Licht
     # Drb
     #
     def remove( actionId )
-      puts "[ ] remove action/rule id: #{ actionId }" if $VERBOSE
+      puts "[ ] remove action/rule id: #{ actionId }" if $_VERBOSE
       removeRule( actionId )
       removeScript( actionId )
     end
@@ -124,6 +124,7 @@ module Licht
     # Drb
     #
     def status
+      # TODO returns junk
       return @rules.collect { |id, rule|
         "  #{id}:\n" +  @actions[id].to_str
       }.join( "\n" )
@@ -145,7 +146,7 @@ module Licht
 
     def wakeup
       time = Time.now.to_i
-      puts "[ ] wakeup at #{ time }" if $VERBOSE
+      puts "[ ] wakeup at #{ time }" if $_VERBOSE
       #p @queue
 
       # queue actions
@@ -211,7 +212,7 @@ module Licht
   end
 
   def Licht.start_daemon( url = 'druby://:9001' )
-    puts "[ ] starting daemon" if $VERBOSE
+    puts "[ ] starting daemon" if $_VERBOSE
     serverObject = Daemon.new
     DRb.start_service url, serverObject
     DRb.thread.join

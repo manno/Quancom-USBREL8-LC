@@ -4,6 +4,7 @@ execute, log, edit, display commands
 
 =end
 
+$_VERBOSE = true
 $TEST = true
 if $TEST
   require 'quancom-test'
@@ -123,19 +124,19 @@ module Licht
       attr_reader :actions
 
       def addOnCommand( outputs, time_delay_on, time_duration )
-        puts "[ ] Add action ON" if $VERBOSE
+        puts "[ ] Add action ON" if $_VERBOSE
         @actions << Action.new( :on, outputs, time_delay_on, time_duration )
         pp @actions[-1] if $DEBUG
       end
 
       def addOffCommand( outputs, time_delay_off, time_duration )
-        puts "[ ] Add action OFF" if $VERBOSE
+        puts "[ ] Add action OFF" if $_VERBOSE
         @actions << Action.new( :off, outputs, time_delay_off, time_duration )
         pp @actions[-1] if $DEBUG
       end
 
       def addSetCommand( outputs, time_delay_off, time_duration )
-        puts "[ ] Add action SET" if $VERBOSE
+        puts "[ ] Add action SET" if $_VERBOSE
         @actions << Action.new( :set, outputs, time_delay_off, time_duration )
         pp @actions[-1] if $DEBUG
       end
@@ -205,7 +206,7 @@ module Licht
       def apply( time )
         t = Time.at time
         next_time = Time.new t.year, t.month, t.mday, @hour, @minute, 0
-        puts "[=] check #{next_time} against #{t}" if $VERBOSE
+        puts "[=] check #{next_time} against #{t}" if $_VERBOSE
 
         p = rand(100)
         difference = next_time.to_i - time
