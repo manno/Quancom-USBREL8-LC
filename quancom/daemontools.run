@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /home/licht/Quancom-USBREL8-LC/ 
+exec sudo -u licht -- bash -c "source /etc/profile.d/rvm.sh; ruby bin/daemon.rb" 2>&1
