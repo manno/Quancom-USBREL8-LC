@@ -99,12 +99,16 @@ module Licht
       @rules.delete( actionId )
     end
 
+    # Drb
+    #
     def add( actionId, action, rule )
       puts "[ ] add action/rule id: #{ actionId }" if $VERBOSE
       addScript( actionId, action )
       addRule( actionId, rule )
     end
 
+    # Drb
+    #
     def remove( actionId )
       puts "[ ] remove action/rule id: #{ actionId }" if $VERBOSE
       removeRule( actionId )
@@ -117,14 +121,26 @@ module Licht
       @queue = []
     end
 
+    # Drb
+    #
     def status
       return @rules.collect { |id, rule|
         "  #{id}:\n" +  @actions[id].to_str
       }.join( "\n" )
     end
 
+    # Drb
+    #
     def getRelayState
       @logger.getState
+    end
+
+    # Drb
+    #
+    def getRuleIds
+      @rules.collect { |id, rule|
+        id
+      }
     end
 
     def wakeup

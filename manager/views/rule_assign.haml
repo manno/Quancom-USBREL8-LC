@@ -1,15 +1,15 @@
-    %h2 Available Scripts
-    %table{:width => "80%", :style => "border: 1px solid"}
+%h2 Available Scripts
+%table{:width => "80%", :style => "border: 1px solid"}
+  %tr
+    %th name
+    %th created
+    %th actions
+  %tbody
+    - @scripts.each do |row|
       %tr
-        %th name
-        %th created
-        %th actions
-      %tbody
-        - @scripts.each do |row|
-          %tr
-            %td= row.name
-            %td= row.created_at
-            %td
-              %a{:href=>"/rule/assign#{@rule_id}", :data => {:script_id => row.id}} assign
-    %a(href="/form/script") create new script
+        %td= row.name
+        %td= row.created_at
+        %td
+          %a{:href=>"/rule/assign/#{@rule.id}/#{row.id}"} assign
+%a(href="/form/script") create new script
 

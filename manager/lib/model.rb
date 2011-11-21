@@ -7,14 +7,12 @@ module Webapp
     class Rule
       include DataMapper::Resource
       property :id, Serial
-      property :script_id, Integer
       property :active, Boolean, :default => false
-      property :type, String
 
-      property :interval, Integer
-      property :execute_at, Integer
-      property :chance, Integer
-      property :last, Integer
+      property :type, String, :default => 'clear'
+      property :interval, String
+      property :execute_at, String
+      property :chance, String
 
       property :created_at, DateTime
 
@@ -25,8 +23,8 @@ module Webapp
     class Script
       include DataMapper::Resource
       property :id, Serial
-      property :name, String
-      property :text, Text
+      property :name, String, :default => 'name'
+      property :text, Text, :default => 'turn on output 1'
       property :created_at, DateTime
 
       belongs_to :rule, :required => false
@@ -37,5 +35,14 @@ module Webapp
       Rule.auto_migrate! unless Rule.storage_exists?
     end
 
+    def Model.init
+      DataMapper::Logger.new($stdout, :debug) if $DEBUG
+      DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/database.db")
+      Model::migrate
+    end
+
   end
 end
+
+# init database
+Webapp::Model::init

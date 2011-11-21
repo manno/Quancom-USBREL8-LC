@@ -17,3 +17,10 @@ run_simulator:
 
 run_daemon: ragel
 	ruby -d bin/daemon.rb
+
+run_web:
+	#cd manager && ruby MainWebApp.rb
+	cd manager && rackup -p 4567
+
+run_web_dev:
+	cd manager && ./shotgun -p 4567

@@ -2,27 +2,22 @@
 %html
   %head
     %title Relay Steuerung
-    %link(rel="stylesheet" href="styles.css")
+    %link(rel="stylesheet" href="styles.css?#{Time.now.to_i}")
   %body
     %h1 Qualcom Relay Steuerung
     %p
-      %p= @message
+      %p{:class => @message_style }= @message
 
     %h2 Relays
     %table{:width => "80%", :style => "border: 1px solid"}
       %tr
-        %th 1
-        %th 2
-        %th 3
-        %th 4
-        %th 5
-        %th 6
-        %th 7
-        %th 8
+        - @relays.each do |id,state|
+          %th= id
       %tbody
         %tr{ :align => "center" }
-          - @relays.each do |row|
-            %td= row.state
+          - @relays.each do |id,state|
+            %td= state
+    %a(href='/status') Show extended Status
 
     %h2 Configured Rules
     %table{:width => "80%", :style => "border: 1px solid"}
@@ -35,16 +30,19 @@
       %tbody
         - @rules.each do |row|
           %tr
-            %td= row.type
+            %td= type_to_name row.type
             %td= row.active
-            %td= row.script ? row.script.name : 'none'
+            %td= row.script ? row.script.name : '-'
             %td= row.created_at
             %td 
-              %a(href="/form/rule/#{row.id}") edit
-              %a(href="/form/rule/delete/#{row.id}") delete
-              %a(href="/form/rule/assign/#{row.id}") assign a script
-              %a(href="/form/rule/assign/#{row.id}") #{row.active ? "deactivate" : "activate"}
-    %a(href="/form/rule") create new rule
+              %a(href="/rule/form/#{row.id}") edit
+              |
+              %a(href="/rule/form/delete/#{row.id}") delete
+              |
+              %a(href="/rule/form/assign/#{row.id}") assign a script
+              |
+              %a(href="/rule/toggle/#{row.id}") #{row.active ? "deactivate" : "activate"}
+    %a(href="/rule/form") create new rule
 
     %h2 Available Scripts
     %table{:width => "80%", :style => "border: 1px solid"}
@@ -58,7 +56,8 @@
             %td= row.name
             %td= row.created_at
             %td
-              %a(href)
-    %a(href="/form/script") create new script
+              %a(href="/script/form/#{row.id}") edit
+              %a(href="/script/form/delete/#{row.id}") delete
+    %a(href="/script/form") create new script
 
 
