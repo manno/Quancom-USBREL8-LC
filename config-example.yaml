@@ -1,6 +1,5 @@
 daemon:
   drb_url: 'druby://127.0.0.1:9001'
   test: true
-
 simulator:
   drb_url: 'druby://:9004'
