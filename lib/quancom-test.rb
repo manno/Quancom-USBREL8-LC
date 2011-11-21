@@ -15,9 +15,11 @@ module QAPI
   def QAPI.openCard( *args )
     puts "openCard( #{args.join(', ')} )"
     DRb.start_service
+    @simulator = DRbObject.new nil, URL
     begin
-      @simulator = DRbObject.new nil, URL
+      @simulator.respond_to? 'setOut'
     rescue
+      @simulator = nil
       STDERR.puts "[!] failed to connect to simulator"
       return -1
     end
