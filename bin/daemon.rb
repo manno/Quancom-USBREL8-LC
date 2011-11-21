@@ -6,7 +6,7 @@ require 'lichtdaemon'
 URL = 'druby://127.0.0.1:9001'
 
 @server = Thread.start { 
-  Licht.start_daemon 
+  Licht.start_daemon URL
 }
 
 @server.join
