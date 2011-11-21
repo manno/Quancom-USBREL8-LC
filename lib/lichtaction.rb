@@ -159,16 +159,16 @@ module Licht
 
     # When to execute the action
     #
-    class ActionRuleIntervall
-      def initialize( intervall=5, chance=100 )
-        @intervall = intervall
+    class ActionRuleInterval
+      def initialize( interval=5, chance=100 )
+        @interval = interval
         @chance = chance
         @last = Time.now.to_i
-        puts "[!] Action intervall: first hit at #{@last+@intervall}"
+        puts "[!] Action interval: first hit at #{@last+@interval}"
       end
       def apply( time )
         p = rand(100)
-        if p < @chance and @last + @intervall < time 
+        if p < @chance and @last + @interval < time 
           @last = time
           return true
         end
@@ -184,7 +184,6 @@ module Licht
         puts "[!] Action PiT: first hit at #{@time}"
       end
       def apply( time )
-        # FIXME does this work?
         p = rand(100)
         difference = @time - time
         if p < @chance and  difference < 2 and difference > -2
@@ -192,6 +191,30 @@ module Licht
         end
       end
     end
+
+    # Daily
+    #
+    class ActionRuleDaytime
+      def initialize( time='18:00', chance=100 )
+        a = time.split /:/
+        @hour = a[0]
+        @minute = a[1]
+        @chance = chance
+        puts "[!] Action ToD: every day at #{@hour}:#{@minute}"
+      end
+      def apply( time )
+        t = Time.at time
+        next_time = Time.new t.year, t.month, t.mday, @hour, @minute, 0
+        puts "[=] check #{next_time} against #{t}" if $VERBOSE
+
+        p = rand(100)
+        difference = next_time.to_i - time
+        if p < @chance and  difference < 2 and difference > -2
+          return true
+        end
+      end
+    end
+    
   end
 
 end

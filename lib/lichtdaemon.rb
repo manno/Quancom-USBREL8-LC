@@ -1,7 +1,7 @@
 $LOAD_PATH << './lib'
 require "drb"
 require 'lichtscript'
-require 'datamapper'
+require 'data_mapper'
 
 # run as daemon
 #
@@ -23,7 +23,7 @@ module Licht
   class Logger
     class Relay
       include DataMapper::Resource
-      property :id, Integer
+      property :id, Integer, :key => true
       property :state, Boolean
     end
     def initialize
@@ -53,8 +53,8 @@ module Licht
   class Daemon
 
     def initialize
-      #@intervall = 60
-      @intervall = 3
+      #@interval = 60
+      @interval = 3
       @actions = {}
       @rules = {}
       @queue = []
@@ -178,7 +178,7 @@ module Licht
       @thread = Thread.new do
         loop do
           wakeup
-          sleep(@intervall)
+          sleep(@interval)
         end
       end
       @thread

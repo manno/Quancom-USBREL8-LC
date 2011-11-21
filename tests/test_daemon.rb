@@ -33,7 +33,7 @@ EOF
 
   licht1 = Licht::Script.load( script1 )
   obj.addScript "one", licht1
-  obj.addRule "one", Licht::Rule::ActionRuleIntervall.new( 12 )
+  obj.addRule "one", Licht::Rule::ActionRuleInterval.new( 12 )
   #sleep 5
 
   licht2 = Licht::Script.load( script2 )
