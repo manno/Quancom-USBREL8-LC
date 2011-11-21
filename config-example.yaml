@@ -1,0 +1,7 @@
+daemon:
+  listen_host: 127.0.0.1
+  listen_port: 9001
+  test: true
+webapp:  
+  listen_host: 0.0.0.0
+  listen_port: 4567

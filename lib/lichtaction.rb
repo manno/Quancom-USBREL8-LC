@@ -5,7 +5,7 @@ execute, log, edit, display commands
 =end
 
 $_VERBOSE = true
-$TEST = true
+#$TEST = true
 if $TEST
   require 'quancom-test'
 else
