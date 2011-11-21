@@ -4,10 +4,7 @@ execute, log, edit, display commands
 
 =end
 
-$LOAD_PATH << './lib'
 $_VERBOSE = true
-
-#$TEST = true
 if $TEST
   require 'quancom-test'
 else

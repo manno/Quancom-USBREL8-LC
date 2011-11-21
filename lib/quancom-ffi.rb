@@ -13,7 +13,7 @@ TODO find shared object?
 module QAPI
   include QuancomConstants
   extend FFI::Library
-  ffi_lib './libqlib.so'
+  ffi_lib 'libqlib.so'
   ffi_convention :stdcall
 
 

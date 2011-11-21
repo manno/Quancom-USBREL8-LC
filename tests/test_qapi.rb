@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << './lib'
-$TEST = true
+
+config_file = File.readable?( 'config.yaml' ) ? 'config.yaml' : 'config-example.yaml'
+config = YAML::load( File.open( config_file ) )
+$TEST = true if config['daemon']['test']
+
 if $TEST
     require 'quancom-test'
 else
