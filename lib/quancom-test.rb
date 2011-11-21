@@ -1,12 +1,15 @@
 require 'quancom'
 require 'drb'
-require 'pp'
+require 'yaml'
+
+config_file = File.readable?( 'config.yaml' ) ? 'config.yaml' : 'config-example.yaml'
+config = YAML::load( File.open( config_file ) )
+$SIMULATOR_URL = defined?( config['simulator']['drb_url'] ) ? config['simulator']['drb_url'] : 'druby://:9004'
 
 # emulate quancom ffi lib
 # 
 module QAPI
   include QuancomConstants
-  URL = 'druby://:9004'
   
   def QAPI.special( *args )
     puts "special( #{args.join(', ')} )"
@@ -15,7 +18,7 @@ module QAPI
   def QAPI.openCard( *args )
     puts "openCard( #{args.join(', ')} )"
     DRb.start_service
-    @simulator = DRbObject.new nil, URL
+    @simulator = DRbObject.new nil, $SIMULATOR_URL
     begin
       @simulator.respond_to? 'setOut'
     rescue

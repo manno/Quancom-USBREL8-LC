@@ -1,4 +1,6 @@
 daemon:
-  listen_host: 127.0.0.1
-  listen_port: 9001
+  drb_url: 'druby://127.0.0.1:9001'
   test: true
+
+simulator:
+  drb_url: 'druby://:9004'
