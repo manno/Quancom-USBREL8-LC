@@ -88,6 +88,7 @@ module Licht
 
       ws1 = ' '+;
       ws0 = ' '{0,};
+      eol = /[\r\n]/ | '\r\n';
 
       output = 'output' ws0 digit+  >StartOutput %EndOutput; 
       label_all = 'all outputs'     %~EndLabelAll;
@@ -107,16 +108,16 @@ module Licht
 
       time_selector = ( ( ws1 time_delay )? ( ws1 time_duration )? );
 
-      command_name = ws0 'label' ws1 output ws1 'as' ws1 label ws0 '\n'
+      command_name = ws0 'label' ws1 output ws1 'as' ws1 label ws0 eol
         @CommandName;
 
-      command_on   = ws0 'turn on' ws1 relay_name_list_on time_selector ws0 '\n'
+      command_on   = ws0 'turn on' ws1 relay_name_list_on time_selector ws0 eol
         @CommandOn;
 
-      command_off  = ws0 'turn off' ws1 relay_name_list_off time_selector ws0 '\n'
+      command_off  = ws0 'turn off' ws1 relay_name_list_off time_selector ws0 eol
         @CommandOff;
 
-      command_set  = ws0 'set relay to' ws1 relay_name_list_on time_selector ws0 '\n'
+      command_set  = ws0 'set relay to' ws1 relay_name_list_on time_selector ws0 eol
         @CommandSet;
 
       main := ( /^#.*/ | command_name | command_on | command_off | command_set );
