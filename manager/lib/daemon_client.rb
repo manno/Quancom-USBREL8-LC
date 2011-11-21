@@ -1,7 +1,7 @@
 $LOAD_PATH << '../lib'
-require 'lib/lichtaction'
-require 'lib/lichtscript'
-require 'lib/lichtdaemon'
+require 'lichtaction'
+require 'lichtscript'
+require 'lichtdaemon'
 
 module Webapp
   DaemonURL = 'druby://:9001'
@@ -23,10 +23,12 @@ module Webapp
       case rule.type
       when 'clear'
         ruleObj = Licht::Script::Rule.ClearQueueAction.new
-      when 'intervall'
-        ruleObj = Licht::Script::Rule.ActionRuleIntervall.new( rule.intervall, rule.chance )
+      when 'interval'
+        ruleObj = Licht::Script::Rule.ActionRuleInterval.new( rule.interval, rule.chance )
       when 'pit'
         ruleObj = Licht::Script::Rule.ActionRulePiT.new( rule.execute_at, rule.chance )
+      when 'tod'
+        ruleObj = Licht::Script::Rule.ActionRuleDaytime.new( rule.execute_at, rule.chance )
       end
       @client.add rule.id, scriptObj, ruleObj
     end
@@ -41,3 +43,4 @@ module Webapp
 
   end
 
+end
