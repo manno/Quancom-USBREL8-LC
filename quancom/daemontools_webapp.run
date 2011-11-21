@@ -1,0 +1,5 @@
+#!/bin/sh
+cd /home/licht/Quancom-USBREL8-LC/manager/
+ARGS="-p 8080 -o 0.0.0.0"
+exec sudo -u licht -- bash -c "source /etc/profile.d/rvm.sh; ./shotgun $ARGS" 2>&1
+#exec sudo -u licht -- bash -c "source /etc/profile.d/rvm.sh; rackup --env production $ARGS" 2>&1
