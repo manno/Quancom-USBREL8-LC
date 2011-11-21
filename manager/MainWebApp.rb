@@ -22,10 +22,8 @@ class MainWebApp < Sinatra::Base
   def initialize
     super
     # drb client
+    @daemon_client = Webapp::DaemonClient.new $DAEMON_URL
     @relays = []
-    @daemon_client = Webapp::DaemonClient.new
-
-
   end
 
   # list all rules, scripts and relays

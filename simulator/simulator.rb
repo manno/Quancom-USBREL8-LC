@@ -3,15 +3,14 @@
 require 'gtk2'
 require "drb"
 
+$LOAD_PATH << 'lib'
+require 'libconfig'
+Licht::Config::setup
+
 PROG_NAME = 'quancom simulator'
-URL = 'druby://:9004'
 DEFAULT_GLADE = 'gui.glade'
 DEFAULT_IMAGE = "usbrel8.gif"
-
 resource_path = './simulator'
-if( File.readable? DEFAULT_GLADE )
-  resource_path = '.'
-end
 
 module Licht
   module Simulator
@@ -34,7 +33,7 @@ module Licht
 
     def setup
       trap('INT') { self.quit }
-      DRb.start_service URL, self
+      DRb.start_service $SIMULATOR_URL, self
       #DRb.thread.join
       
       image_path = File.join( @resource_path, DEFAULT_IMAGE )

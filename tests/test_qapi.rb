@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << './lib'
 
-config_file = File.readable?( 'config.yaml' ) ? 'config.yaml' : 'config-example.yaml'
-config = YAML::load( File.open( config_file ) )
-$TEST = true if config['daemon']['test']
+require 'libconfig'
+Licht::Config::setup
 
 if $TEST
     require 'quancom-test'

@@ -1,10 +1,6 @@
 require 'quancom'
 require 'drb'
-require 'yaml'
-
-config_file = File.readable?( 'config.yaml' ) ? 'config.yaml' : 'config-example.yaml'
-config = YAML::load( File.open( config_file ) )
-$SIMULATOR_URL = defined?( config['simulator']['drb_url'] ) ? config['simulator']['drb_url'] : 'druby://:9004'
+$SIMULATOR_URL ||= 'druby://:9004'
 
 # emulate quancom ffi lib
 # 
@@ -35,8 +31,8 @@ module QAPI
     @simulator.setOut( relay, state )
   end
 
-  def QAPI.writeDO16( handle, output_mask, arg )
-    puts "writeDO16( #{handle}, #{output_mask}, #{arg} )"
+  def QAPI.writeDO16( handle, arg1, output_mask, arg2 )
+    puts "writeDO16( #{handle}, #{arg1}, #{output_mask}, #{arg2} )"
     return unless defined? @simulator
     (1..8).each { |i| 
       if i >> output_mask == 0

@@ -4,8 +4,6 @@ require "drb"
 require 'lichtdaemon'
 require 'lichtscript'
 
-URL = 'druby://:9001'
-
 def start_client( url= 'druby://:9001' )
   DRb.start_service()
   obj = DRbObject.new nil, url
