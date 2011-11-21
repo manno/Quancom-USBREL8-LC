@@ -60,11 +60,14 @@ module Webapp
 
     def status
       begin
+        @client.status
+      rescue DRb::DRbConnError
         STDERR.puts "[!] Failed to connect to drb daemon #{@url}" if $DEBUG
       end
     end
 
     def synchronize( rules )
+      # TODO filter in db, not in query results
       rules_db = rules.select { |rule| rule.active }.collect { |rule| rule.id }
       rules_daemon = @client.getRuleIds
       rules_db.each { |id|
@@ -84,6 +87,7 @@ module Webapp
     end
 
     def init_from_db( rules )
+      # TODO filter in db, not in query results
       rules_db = rules.select { |rule| rule.active }.collect { |rule| rule.id }
       rules_daemon = @client.getRuleIds
       rules_daemon.each { |id|

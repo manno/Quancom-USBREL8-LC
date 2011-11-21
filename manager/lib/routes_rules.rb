@@ -29,6 +29,10 @@ module Webapp
 
     get '/form/assign/:id' do
       @rule = Rule.get params[:id]
+      if @rule.type == 'clear'
+        set_message "can't assign a script to a clear rule."
+        redirect '/'
+      end
       @scripts = Script.all
       haml :rule_assign
     end
@@ -48,7 +52,7 @@ module Webapp
       if params[:submit] == 'Submit'
         @rule = Rule.get params[:id]
         update_rule_from_form @rule, params[:data]
-        daemon_disable_rule @rule
+        daemon_disable_active_rule @rule
         set_message "successfully updated rule #{@rule.id}."
       end
       redirect '/'
@@ -59,7 +63,7 @@ module Webapp
       # remove rule from daemon if active
       if params[:submit] == 'Submit'
         @rule = Rule.get params[:id]
-        daemon_disable_rule @rule
+        daemon_disable_active_rule @rule
         @rule.destroy
         set_message "successfully deleted rule #{params[:id]}."
       end
@@ -71,7 +75,7 @@ module Webapp
       @rule = Rule.get params[:id]
       @script = Script.get params[:script_id]
       @rule.script = @script
-      daemon_disable_rule @rule
+      daemon_disable_active_rule @rule
       @rule.save
       set_message "successfully assigned rule #{@rule.id} to script #{@script.id}"
       redirect "/"
@@ -112,10 +116,10 @@ module Webapp
 
     helpers do
   
-      def daemon_disable_rule( rule )
-        pp rule
+      def daemon_disable_active_rule( rule )
         if rule.active
           rule.active = false
+          rule.save
           @daemon_client.remove rule
         end
       end

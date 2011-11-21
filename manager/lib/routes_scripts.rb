@@ -39,6 +39,7 @@ module Webapp
         @script.text = params[:script][:text]
         @script.created_at = Time.now
         @script.save
+        daemon_disable_active_script @script
         set_message "successfully updated script #{@script.id}."
       end
       redirect '/'
@@ -49,6 +50,7 @@ module Webapp
       if params[:submit] == 'Submit'
         @script = Script.get params[:id]
         @script.destroy
+        daemon_disable_active_script @script
         set_message "successfully deleted script #{params[:id]}."
       end
       redirect '/'
@@ -58,5 +60,18 @@ module Webapp
     #get '/script' do
     #  haml :script_list
     #end
+
+    helpers do
+
+      def daemon_disable_active_script( script )
+        rules = Rule.all(:script => { :id => script.id }, :active => true)
+        rules.each { |rule|
+          rule.active = false
+          rule.save
+          @daemon_client.remove rule
+        }
+      end
+
+    end
   end
 end

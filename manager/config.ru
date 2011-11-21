@@ -7,8 +7,6 @@ require './MainWebApp'
 require "./lib/routes_rules"
 require "./lib/routes_scripts"
 
-@silent = nil
-
 set :port, 4567
 #enable :logging
 #set :environment, :development

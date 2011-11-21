@@ -51,10 +51,11 @@ class MainWebApp < Sinatra::Base
   end
 
   configure do
-    puts "################################ EXECUTE ONLY ONCE  #################"
-
-    daemon_client = Webapp::DaemonClient.new
-    daemon_client.init_from_db Rule.all
+    if settings.environment != :development
+      puts "################################ EXECUTE ONLY ONCE  #################"
+      daemon_client = Webapp::DaemonClient.new
+      daemon_client.init_from_db Rule.all
+    end
   end
 
 end

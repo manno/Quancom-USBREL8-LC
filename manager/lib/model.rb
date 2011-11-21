@@ -4,6 +4,16 @@ require 'pp'
 module Webapp
   module  Model
 
+    class Script
+      include DataMapper::Resource
+      property :id, Serial
+      property :name, String, :default => 'name'
+      property :text, Text, :default => 'turn on output 1'
+      property :created_at, DateTime
+
+      has n, :rules
+    end
+
     class Rule
       include DataMapper::Resource
       property :id, Serial
@@ -16,18 +26,8 @@ module Webapp
 
       property :created_at, DateTime
 
-      has 1, :script
+      belongs_to :script, :required => false
 
-    end
-
-    class Script
-      include DataMapper::Resource
-      property :id, Serial
-      property :name, String, :default => 'name'
-      property :text, Text, :default => 'turn on output 1'
-      property :created_at, DateTime
-
-      belongs_to :rule, :required => false
     end
 
     def Model.migrate

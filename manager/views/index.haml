@@ -38,8 +38,9 @@
               %a(href="/rule/form/#{row.id}") edit
               |
               %a(href="/rule/form/delete/#{row.id}") delete
-              |
-              %a(href="/rule/form/assign/#{row.id}") assign a script
+              - if row.type != 'clear'
+                |
+                %a(href="/rule/form/assign/#{row.id}") assign a script
               |
               %a(href="/rule/toggle/#{row.id}") #{row.active ? "deactivate" : "activate"}
     %a(href="/rule/form") create new rule
@@ -48,12 +49,14 @@
     %table{:width => "80%", :style => "border: 1px solid"}
       %tr
         %th name
+        %th content
         %th created
         %th actions
       %tbody
         - @scripts.each do |row|
           %tr
             %td= row.name
+            %td= row.text[0..60]
             %td= row.created_at.strftime("%Y-%m-%d %H:%M:%S")
             %td
               %a(href="/script/form/#{row.id}") edit
