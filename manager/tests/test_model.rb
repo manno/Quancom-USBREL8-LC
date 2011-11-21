@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'data_mapper'
-require "../lib/model.rb"
+require_relative "../lib/model"
 require 'pp'
-include Webapp::Model
 
-# executed when?
-#File.unlink "#{Dir.pwd}/database.db"
-DataMapper::Logger.new($stdout, :debug)
-DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/../database.db")
+include Webapp::Model
+# log or save
+#DataMapper::Logger.new($stdout, :debug)
+DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/database.db")
+DataMapper.finalize
 Webapp::Model::migrate
 
 # create test data
@@ -36,13 +36,13 @@ rule.chance = '130'
 rule.save
 
 script = Script.new
-script.name = "test"
-script.text = "empty"
+script.name = "on8"
+script.text = "turn on output 8"
 script.save
 
 # add relation
-rule.script = script
+rule.script =  script
 rule.save
 
-pp rule 
-pp rule.script
+pp rule
+pp rule.script 
