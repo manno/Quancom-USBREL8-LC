@@ -1,1 +1,27 @@
 Controlling a Quancom USB Relay Module with ruby
+
+
+= Qualcom Ruby Libraries
+
+Depends
+  ffi
+
+= LichtScript Parser
+
+Depends
+  ragel
+
+= LichtScript Cron Daemon
+
+Depends
+  datamapper dm-sqlite-adapter 
+
+= Simulator GUI
+
+Depends
+  gtk2
+
+= Manager Webapp
+
+Depends
+  sinatra haml datamapper dm-sqlite-adapter shotgun
