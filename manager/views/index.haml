@@ -38,9 +38,8 @@
               %a(href="/rule/form/#{row.id}") edit
               |
               %a(href="/rule/form/delete/#{row.id}") delete
-              - if row.type != 'clear'
-                |
-                %a(href="/rule/form/assign/#{row.id}") assign a script
+              |
+              %a(href="/rule/form/assign/#{row.id}") assign a script
               |
               %a(href="/rule/toggle/#{row.id}") #{row.active ? "deactivate" : "activate"}
     %a(href="/rule/form") create new rule

@@ -5,7 +5,7 @@ module Webapp
 
     get '/form' do
       @data = {
-        :type => 'clear',
+        :type => 'interval',
         :interval_chance => '100',
         :interval_interval => '15',
         :pit_chance => '100',
@@ -29,10 +29,6 @@ module Webapp
 
     get '/form/assign/:id' do
       @rule = Rule.get params[:id]
-      if @rule.type == 'clear'
-        set_message "can't assign a script to a clear rule."
-        redirect '/'
-      end
       @scripts = Script.all
       haml :rule_assign
     end
@@ -126,8 +122,9 @@ module Webapp
 
       def update_rule_from_form( rule, params )
         type = params[:type]
-        unless %w{clear interval pit tod}.include? type
-          type = 'clear'
+        if type_to_name( type ) == ''
+          set_message "invalid rule type."
+          redirect '/'
         end
         rule.type = type
         rule.created_at = Time.now

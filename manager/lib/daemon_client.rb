@@ -30,8 +30,6 @@ module Webapp
       return if rule.script.nil?
       scriptObj = Licht::Script.load rule.script.text
       case rule.type
-      when 'clear'
-        ruleObj = Licht::Rule::RuleClearQueue.new
       when 'interval'
         ruleObj = Licht::Rule::RuleInterval.new( rule.interval.to_i, rule.chance.to_i )
       when 'pit'

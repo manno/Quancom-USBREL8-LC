@@ -3,22 +3,30 @@ require "drb"
 require 'lichtscript'
 require 'data_mapper'
 
-# run as daemon
+# daemon, periodic execution of relay commands
 #
-# add RPC for simple control of relays
+# = Scripts
 #
-# load several Licht::ActionStack containing Licht::Action from lichtcontrol
-#  using Licht::Script.load
+# load several Licht::Script::QapiActionStack containing 
+#   Licht::Script::QapiAction from lichtcontrol
+#   using Licht::Script.load
+#
+# There is a  custom shutoff Object
+#   Licht::Script::ClearQueueAction, which clears timers from queue
+#
+# = Rules
 #
 # assign Licht::Rule to every script (start time, execution probability, ...)
-# add custom shutoff rule: Licht::Rule::RuleClearQueue, which clears timers from queue
 #
 # each rule can have one script
 # each script may belong to several rules
 #
 # execute scripts according to Licht::Rules every n minutes
 #
+# = State
+#
 # keeps state of all executed commands in log/db
+#
 $_VERBOSE = true
 
 module Licht
@@ -80,7 +88,17 @@ module Licht
     attr_reader :cardNumber
     attr_writer :cardNumber
 
-    # add Script::ActionStack
+    def start_thread
+      @thread = Thread.new do
+        loop do
+          wakeup
+          sleep(@interval)
+        end
+      end
+      @thread
+    end
+
+    # add Script::QapiActionStack
     #
     def addScript( ruleId, script )
       puts "[ ] add script: #{ ruleId }" if $_VERBOSE
@@ -155,32 +173,45 @@ module Licht
       puts "[ ] wakeup at #{ time }" if $_VERBOSE
       #p @queue
 
+      queue_actions_from_rules time
+
+      queue_execute_actions time
+    end
+
+    private
+
+    def queue_actions_from_rules( time )
       # queue scripts
       @rules.each { |id, rule| 
         if rule.apply(time) 
-          p rule
           script = @scripts[id]
           puts "[=] executing rule #{id}"
-          p script
-          # queue actions if this is a actionstack
+          # queue actions if this is an actionstack
+          #   or add single action if this is an action
           #   or clear queue if this is a queue clear rule
           if script.respond_to?( 'actions' )
-            script.actions.each { |a| 
-              # put action in queue
-              @queue << { :at => time + a.delay, :action => a }
-              # queue appropiate stop action in delay+duration s if duration > 0
-              if a.duration > 0
-                @queue << { :at => time + a.delay + a.duration, :action => a.invert }
-              end
-            }
+            script.actions.each { |a| queue_add_action time, a }
+          elsif script.respond_to?( 'execute' )
+            queue_add_action time, script
           else
-            # this is a RuleClearQueue
+            # this is a ClearQueueAction
             @queue = []
             break
           end
         end
       }
+    end
 
+    def queue_add_action( time, a )
+      # put action in queue
+      @queue << { :at => time + a.delay, :action => a }
+      # queue appropiate stop action in delay+duration s if duration > 0
+      if a.duration > 0
+        @queue << { :at => time + a.delay + a.duration, :action => a.invert }
+      end
+    end
+
+    def queue_execute_actions( time )
       # anything to execute?
       todo = []
       @queue.each_index { |i|
@@ -213,16 +244,6 @@ module Licht
       todo.reverse.each { |i|
         @queue.delete_at( i )
       }
-    end
-
-    def start_thread
-      @thread = Thread.new do
-        loop do
-          wakeup
-          sleep(@interval)
-        end
-      end
-      @thread
     end
 
   end

@@ -12,7 +12,6 @@ DataMapper.finalize
 Webapp::Model::migrate
 
 # create test data
-Rule.create( :type => 'clear' )
 Rule.create( :type => 'tod', :created_at => Time.now, :execute_at => '18:00', :chance => '100' )
 Rule.create( :type => 'tod', :created_at => Time.now, :execute_at => '19:00', :chance => '99' )
 Rule.create( :type => 'tod', :created_at => Time.now, :execute_at => '20:00', :chance => '98' )

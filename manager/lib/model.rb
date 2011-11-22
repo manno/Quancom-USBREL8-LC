@@ -19,7 +19,7 @@ module Webapp
       property :id, Serial
       property :active, Boolean, :default => false
 
-      property :type, String, :default => 'clear'
+      property :type, String, :default => ''
       property :interval, String
       property :execute_at, String
       property :chance, String

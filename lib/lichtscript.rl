@@ -149,7 +149,7 @@ module Licht
   module Script
     def Script.load( input )
       include Licht::Parser
-      licht = Licht::Script::ActionStack.new
+      licht = Licht::Script::QapiActionStack.new
       Licht::Parser.setup( licht )
 
       puts "[ ] Parsing commands:" if $_VERBOSE

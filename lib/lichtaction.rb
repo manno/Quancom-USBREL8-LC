@@ -15,7 +15,10 @@ require 'pp'
 module Licht
 
   module Script
-    class Action
+
+    # A single command
+    #
+    class QapiAction
 
       def initialize( type, outputs, delay, duration )
         @type = type
@@ -114,9 +117,9 @@ module Licht
 
     end
 
-    # List of actions
+    # List of actions, result of Script.load
     #
-    class ActionStack
+    class QapiActionStack
       def initialize
         @actions = []
       end
@@ -124,19 +127,19 @@ module Licht
 
       def addOnCommand( outputs, time_delay_on, time_duration )
         puts "[ ] Add action ON" if $_VERBOSE
-        @actions << Action.new( :on, outputs, time_delay_on, time_duration )
+        @actions << QapiAction.new( :on, outputs, time_delay_on, time_duration )
         pp @actions[-1] if $DEBUG
       end
 
       def addOffCommand( outputs, time_delay_off, time_duration )
         puts "[ ] Add action OFF" if $_VERBOSE
-        @actions << Action.new( :off, outputs, time_delay_off, time_duration )
+        @actions << QapiAction.new( :off, outputs, time_delay_off, time_duration )
         pp @actions[-1] if $DEBUG
       end
 
       def addSetCommand( outputs, time_delay_off, time_duration )
         puts "[ ] Add action SET" if $_VERBOSE
-        @actions << Action.new( :set, outputs, time_delay_off, time_duration )
+        @actions << QapiAction.new( :set, outputs, time_delay_off, time_duration )
         pp @actions[-1] if $DEBUG
       end
 
@@ -145,17 +148,18 @@ module Licht
       end
 
     end
-  end
 
-  module Rule
-    # Clear Queue Rule
+    # Clear Queue
     # 
-    class RuleClearQueue
+    class ClearQueueAction
       # contains nothing really
       def to_str
         return "      clear queue action"
       end
     end
+  end
+
+  module Rule
 
     # When to execute the action
     #

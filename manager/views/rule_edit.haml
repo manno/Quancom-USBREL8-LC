@@ -5,10 +5,6 @@
   %fieldset
     %ul{:style => 'list-style: none;'}
       %li
-        %input{:type => "radio", :name => "data[type]", :value => "clear", :checked => @data[:type] == 'clear'}
-        %label{:for => "type"} Clear Rules Action
-      %br
-      %li
         %input{:type => "radio", :name => "data[type]", :value => "interval", :checked => @data[:type] == 'interval'}
         %label{:for => "type"} Interval Rule
         %table{:width => "80%", :style => "border: 1px solid"}

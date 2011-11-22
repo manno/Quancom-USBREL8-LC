@@ -3,14 +3,14 @@ module Webapp
 
     def type_to_name( type )
       case type
-      when 'clear'
-        "Delete Rules"
       when 'interval'
         "Interval"
       when 'pit'
         "Point in Time"
       when 'tod'
         "Time of Day"
+      else
+        ""
       end
     end
 

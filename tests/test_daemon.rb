@@ -45,7 +45,7 @@ EOF
   #obj.remove( "two" )
   #sleep 10
 
-  obj.addScript "clear", Licht::Rule::RuleClearQueue.new
+  obj.addScript "clear", Licht::Script::ClearQueueAction.new
   obj.addRule "clear", Licht::Rule::RulePiT.new( Time.now.to_i + 10 )
   sleep 5
 
