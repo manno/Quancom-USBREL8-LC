@@ -72,7 +72,7 @@ module Webapp
       rules_daemon = @client.getRuleIds
       rules_db.each { |id|
         unless rules_daemon.include? id
-          STDERR.puts "[!] webinterface had one to many, remove #{id}"
+          STDERR.puts "[!] webinterface had one to many, deactivate #{id}"
           rule = rules.select { |rule| rule.id == id }.first
           rule.active = false
           rule.save
@@ -98,7 +98,7 @@ module Webapp
       }
       rules_db.each { |id|
         unless rules_daemon.include? id
-          STDERR.puts "[!] daemon is missing rule #{id}"
+          STDERR.puts "[!] daemon is missing rule #{id}, adding"
           rule = rules.select { |rule| rule.id == id }.first
           add rule
         end

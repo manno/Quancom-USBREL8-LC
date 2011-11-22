@@ -66,14 +66,14 @@ module Licht
       @actions = {}
       @rules = {}
       @queue = []
-      @cardHandle = 0
+      @cardNumber = 0
 
       @logger = Logger.new
 
       start_thread
     end
-    attr_reader :cardHandle
-    attr_writer :cardHandle
+    attr_reader :cardNumber
+    attr_writer :cardNumber
 
     # add Script::ActionStack
     #
@@ -185,12 +185,19 @@ module Licht
 
       # execute and log queued actions
       if not todo.empty?
-        handle = QAPI.openCard QAPI::USBREL8LC, @cardHandle
-        todo.each { |i|
-          @queue[i][:action].execute( handle )
-          @queue[i][:action].log_execute( @logger )
-        }
-        QAPI.closeCard handle
+        handle = QAPI.openCard QAPI::USBREL8LC, @cardNumber
+        if handle > 0
+          puts "[ ] QAPI card open success e#{handle})" if $_VERBOSE
+          todo.each { |i|
+            action = @queue[i][:action]
+            puts "[=] QAPI action: #{action.to_str}" if $_VERBOSE
+            action.execute( handle )
+            action.log_execute( @logger )
+          }
+          QAPI.closeCard handle
+        else
+          puts "[!] QAPI card open failed!"
+        end
       end
 
       # remove finished actions from queue
