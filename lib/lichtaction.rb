@@ -81,9 +81,9 @@ module Licht
             end
           }
         when :on
-          @outputs.each { |o| logger.setOut o, true }
+          @outputs.each { |o| logger.setOut( 1<< o-1, true ) }
         when :off
-          @outputs.each { |o| logger.setOut o, false }
+          @outputs.each { |o| logger.setOut( 1<< o-1, false ) }
         end
       end
 

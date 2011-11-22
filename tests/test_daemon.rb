@@ -14,13 +14,20 @@ def start_client( url= 'druby://:9001' )
 end
 
 script1 = <<-EOF 
-turn on output 1
-turn off output 2
+turn off output 1
+turn on output 5 for 10 seconds
+turn off output 8
 EOF
 
 script2 = <<-EOF 
+turn on output 1
 turn on output 2 in 10 seconds for 10 seconds
-turn off output 3
+turn on output 3
+turn on output 4
+turn on output 5
+turn on output 6
+turn on output 7
+turn on output 8
 EOF
 
 # start a daemon

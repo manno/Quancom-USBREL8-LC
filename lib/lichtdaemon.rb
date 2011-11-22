@@ -56,10 +56,12 @@ module Licht
       end 
     end
 
+    # expect integer position of relay as id
+    #
     def setOut(id, state)
       relay = Relay.get id
       relay.state = state
-      relay.update
+      relay.save
     end
 
     def getState
