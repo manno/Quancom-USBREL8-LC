@@ -32,24 +32,45 @@ module Licht
 
       def parse_outputs( outputs )
         # translate relay number to bit position
+        # 1 -> 0x1
         # 3 -> 0x4
+        # 8 -> 128
         outputs.each { |o|
           case o
           when 'ALL'
             @outputs = [ QAPI::ALL ]
             break
           else
-            val =  1 << o-1
+            val =  1 << (o-1)
             @outputs.push( val )
           end
         }
         @outputs
       end
 
+      # for writeDO16
+      #
       def output_mask
         val = 0
         @outputs.each { |o| val += o } 
         val
+      end
+
+      # Return >0 if i is in bitfield
+      # => 0
+      #
+      def checkBitSet( i, bitfield )
+        bitfield & (1<<i)
+      end
+
+      # Return all Positions in Bitfield
+      # translate bit position to int position (8=3)
+      # => [0,..,7]
+      #
+      def bitPos2Int( b )
+        (0..7).select { |i| 
+          true if checkBitSet(i, b)>0 
+        }
       end
 
       def execute( handle )
@@ -59,11 +80,12 @@ module Licht
           QAPI.writeDO16 handle, 0, output_mask, 0
         when :on
           @outputs.each { |o|
-            QAPI.writeDO1 handle, o-1, QAPI::TRUE, 0
+            # to integer position (0..7)
+            QAPI.writeDO1 handle, bitPos2Int( o ).first, QAPI::TRUE, 0
           }
         when :off
           @outputs.each { |o|
-            QAPI.writeDO1 handle, o-1, QAPI::FALSE, 0
+            QAPI.writeDO1 handle, bitPos2Int( o ).first, QAPI::FALSE, 0
           }
         end
       end
@@ -73,24 +95,21 @@ module Licht
       def log_execute( logger )
         case @type
         when :set
-          (1..8).each { |i| 
-            if i >> output_mask == 0
-              logger.setOut( i, true )
+          (0..7).each { |i| 
+            relay = i + 1
+            if checkBitSet( i, output_mask ) > 0
+              logger.setOut( relay, true )
             else
-              logger.setOut( i, false )
+              logger.setOut( relay, false )
             end
           }
         when :on
           @outputs.each { |o| 
-            (1..8).each { |i| 
-              logger.setOut( i, true ) if i >> o == 0
-            }
+            logger.setOut( bitPos2Int( o ).first + 1, true ) 
           }
         when :off
           @outputs.each { |o| 
-            (1..8).each { |i| 
-              logger.setOut( i, false ) if i >> o == 0
-            }
+            logger.setOut( bitPos2Int( o ).first + 1, false ) 
           }
         end
       end
@@ -114,11 +133,11 @@ module Licht
           return "    QAPI.writeDO16 handle, #{output_mask}, 0\n"
         when :on
           return @outputs.collect { |o|
-            "    QAPI.writeDO1 handle, #{o-1}, QAPI::TRUE, 0"
+            "    QAPI.writeDO1 handle, #{bitPos2Int( o ).first}, QAPI::TRUE, 0"
           }.join( "\n" )
         when :off
           return @outputs.collect { |o|
-            "    QAPI.writeDO1 handle, #{o-1}, QAPI::FALSE, 0"
+            "    QAPI.writeDO1 handle, #{bitPos2Int( o ).first}, QAPI::FALSE, 0"
           }.join( "\n" )
         end
       end

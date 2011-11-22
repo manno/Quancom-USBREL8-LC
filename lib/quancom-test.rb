@@ -25,25 +25,28 @@ module QAPI
     return 1
   end
 
+  # Return >0 if i is in bitfield
+  # => 0
+  #
+  def QAPI.checkBitSet( i, bitfield )
+    bitfield & (1<<i)
+  end
+
   def QAPI.writeDO1( handle, relay, state, arg )
     puts "writeDO1( #{handle}, #{relay}, #{state}, #{arg} )"
     return unless defined? @simulator
-    # translate bit position to int position (8=3)
-    (1..8).each { |i| 
-      if i >> relay == 0
-        @simulator.setOut( i, state )
-      end
-    }
+    @simulator.setOut( relay+1, state )
   end
 
   def QAPI.writeDO16( handle, arg1, output_mask, arg2 )
     puts "writeDO16( #{handle}, #{arg1}, #{output_mask}, #{arg2} )"
     return unless defined? @simulator
-    (1..8).each { |i| 
-      if i >> output_mask == 0
-        @simulator.setOut( i, true )
+    (0..7).each { |i| 
+      relay = i + 1
+      if checkBitSet( i, output_mask ) > 0
+        @simulator.setOut( relay, true )
       else
-        @simulator.setOut( i, false )
+        @simulator.setOut( relay, false )
       end
     }
   end

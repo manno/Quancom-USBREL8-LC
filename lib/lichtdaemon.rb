@@ -57,6 +57,7 @@ module Licht
     end
 
     # expect integer position of relay as id
+    # (1..8)
     #
     def setOut(id, state)
       puts "[ ] set relay #{ id } to #{ state } in db" if $_VERBOSE
