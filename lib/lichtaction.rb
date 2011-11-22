@@ -56,7 +56,7 @@ module Licht
         # time related, handled by daemon
         case @type
         when :set
-          QAPI.writeDO16 handle, output_mask, 0
+          QAPI.writeDO16 handle, 0, output_mask, 0
         when :on
           @outputs.each { |o|
             QAPI.writeDO1 handle, o-1, QAPI::TRUE, 0

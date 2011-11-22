@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << './lib'
+require 'libconfig'
+Licht::Config::setup
 require 'lichtscript'
 require 'pp'
 
