@@ -28,7 +28,12 @@ module QAPI
   def QAPI.writeDO1( handle, relay, state, arg )
     puts "writeDO1( #{handle}, #{relay}, #{state}, #{arg} )"
     return unless defined? @simulator
-    @simulator.setOut( relay, state )
+    # translate bit position to int position (8=3)
+    (1..8).each { |i| 
+      if i >> relay == 0
+        @simulator.setOut( i, state )
+      end
+    }
   end
 
   def QAPI.writeDO16( handle, arg1, output_mask, arg2 )
