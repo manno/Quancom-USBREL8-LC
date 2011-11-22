@@ -20,15 +20,17 @@ $_VERBOSE = true
 
 module Licht
 
+  class Relay
+    include DataMapper::Resource
+    property :id, Integer, :key => true
+    property :state, Boolean
+  end
+
   class Logger
-    class Relay
-      include DataMapper::Resource
-      property :id, Integer, :key => true
-      property :state, Boolean
-    end
 
     def initialize
       DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/db_relays.db")
+      DataMapper.finalize
       migrate
     end
 
@@ -44,7 +46,7 @@ module Licht
     end
 
     def setOut(id, state)
-      relay = Relay.new :id => id
+      relay = Relay.get id
       relay.state = false
       relay.update :state => state 
     end
@@ -79,6 +81,7 @@ module Licht
     #
     def addScript( actionId, action )
       puts "[ ] add action: #{ actionId }" if $_VERBOSE
+      puts action.to_str if $_VERBOSE
       @actions[actionId] = action
     end
 
@@ -176,7 +179,7 @@ module Licht
       # anything to execute?
       todo = []
       @queue.each_index { |i|
-        # FIXME tolerance?
+        # TODO tolerance working?
         difference = time - @queue[i][:at]
         if difference < 2 and difference > -2
           todo << i
@@ -187,10 +190,11 @@ module Licht
       if not todo.empty?
         handle = QAPI.openCard QAPI::USBREL8LC, @cardNumber
         if handle > 0
-          puts "[ ] QAPI card open success e#{handle})" if $_VERBOSE
+          puts "[ ] QAPI card open success (#{handle})" if $_VERBOSE
           todo.each { |i|
             action = @queue[i][:action]
-            puts "[=] QAPI action: #{action.to_str}" if $_VERBOSE
+            puts "[=] execute QAPI action" if $_VERBOSE
+            puts action.to_str if $_VERBOSE
             action.execute( handle )
             action.log_execute( @logger )
           }

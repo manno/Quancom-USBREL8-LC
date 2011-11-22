@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << './lib'
-
-
+require 'libconfig'
+Licht::Config::setup
 
 require 'lichtaction'
 rule1 = Licht::Rule::ActionRuleInterval.new( 12 )
