@@ -25,6 +25,7 @@ module Webapp
         @script = Script.new
         @script.name = params[:script][:name]
         @script.text = params[:script][:text]
+        @script.text += "\n" unless @script.text[-1] == "\n"
         @script.created_at = Time.now
         @script.save
         set_message "successfully created script #{@script.id}.", 'success'
@@ -37,6 +38,7 @@ module Webapp
         @script = Script.get params[:id]
         @script.name = params[:script][:name]
         @script.text = params[:script][:text]
+        @script.text += "\n" unless @script.text[-1] == "\n"
         @script.created_at = Time.now
         @script.save
         daemon_disable_active_script @script
