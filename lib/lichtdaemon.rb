@@ -13,6 +13,9 @@ require 'data_mapper'
 # assign Licht::ActionRule to every script (start time, execution probability, ...)
 # add custom shutoff rule: Licht::ClearQueueAction, which clears timers from queue
 #
+# each rule can have one script
+# each script may belong to several rules
+#
 # execute scripts according to Licht::Rules every n minutes
 #
 # keeps state of all executed commands in log/db
@@ -47,8 +50,8 @@ module Licht
 
     def setOut(id, state)
       relay = Relay.get id
-      relay.state = false
-      relay.update :state => state 
+      relay.state = state
+      relay.update
     end
 
     def getState
@@ -79,43 +82,43 @@ module Licht
 
     # add Script::ActionStack
     #
-    def addScript( actionId, action )
-      puts "[ ] add action: #{ actionId }" if $_VERBOSE
-      puts action.to_str if $_VERBOSE
-      @actions[actionId] = action
+    def addScript( ruleId, actions )
+      puts "[ ] add actions: #{ ruleId }" if $_VERBOSE
+      puts actions.to_str if $_VERBOSE
+      @actions[ruleId] = actions
     end
 
-    def removeScript( actionId )
-      puts "[ ] remove action: #{ actionId }" if $_VERBOSE
-      @actions.delete( actionId )
+    def removeScript( ruleId )
+      puts "[ ] remove action: #{ ruleId }" if $_VERBOSE
+      @actions.delete( ruleId )
     end
 
     # add Script::Rule::*
     #
-    def addRule( actionId, rule )
-      puts "[ ] add rule: #{ actionId }" if $_VERBOSE
-      @rules[actionId] = rule
+    def addRule( ruleId, rule )
+      puts "[ ] add rule: #{ ruleId }" if $_VERBOSE
+      @rules[ruleId] = rule
     end
     
-    def removeRule( actionId )
-      puts "[ ] remove rule from: #{ actionId }" if $_VERBOSE
-      @rules.delete( actionId )
+    def removeRule( ruleId )
+      puts "[ ] remove rule from: #{ ruleId }" if $_VERBOSE
+      @rules.delete( ruleId )
     end
 
     # Drb
     #
-    def add( actionId, action, rule )
-      puts "[ ] add action/rule id: #{ actionId }" if $_VERBOSE
-      addScript( actionId, action )
-      addRule( actionId, rule )
+    def add( ruleId, action, rule )
+      puts "[ ] add action/rule id: #{ ruleId }" if $_VERBOSE
+      addScript( ruleId, action )
+      addRule( ruleId, rule )
     end
 
     # Drb
     #
-    def remove( actionId )
-      puts "[ ] remove action/rule id: #{ actionId }" if $_VERBOSE
-      removeRule( actionId )
-      removeScript( actionId )
+    def remove( ruleId )
+      puts "[ ] remove action/rule id: #{ ruleId }" if $_VERBOSE
+      removeRule( ruleId )
+      removeScript( ruleId )
     end
 
     def clear
