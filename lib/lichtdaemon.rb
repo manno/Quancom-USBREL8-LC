@@ -10,8 +10,8 @@ require 'data_mapper'
 # load several Licht::ActionStack containing Licht::Action from lichtcontrol
 #  using Licht::Script.load
 #
-# assign Licht::ActionRule to every script (start time, execution probability, ...)
-# add custom shutoff rule: Licht::ClearQueueAction, which clears timers from queue
+# assign Licht::Rule to every script (start time, execution probability, ...)
+# add custom shutoff rule: Licht::Rule::RuleClearQueue, which clears timers from queue
 #
 # each rule can have one script
 # each script may belong to several rules
@@ -68,7 +68,7 @@ module Licht
     def initialize
       #@interval = 60
       @interval = 3
-      @actions = {}
+      @scripts = {}
       @rules = {}
       @queue = []
       @cardNumber = 0
@@ -82,15 +82,15 @@ module Licht
 
     # add Script::ActionStack
     #
-    def addScript( ruleId, actions )
-      puts "[ ] add actions: #{ ruleId }" if $_VERBOSE
-      puts actions.to_str if $_VERBOSE
-      @actions[ruleId] = actions
+    def addScript( ruleId, script )
+      puts "[ ] add script: #{ ruleId }" if $_VERBOSE
+      puts script.to_str if $_VERBOSE
+      @scripts[ruleId] = script
     end
 
     def removeScript( ruleId )
-      puts "[ ] remove action: #{ ruleId }" if $_VERBOSE
-      @actions.delete( ruleId )
+      puts "[ ] remove script: #{ ruleId }" if $_VERBOSE
+      @scripts.delete( ruleId )
     end
 
     # add Script::Rule::*
@@ -107,22 +107,22 @@ module Licht
 
     # Drb
     #
-    def add( ruleId, action, rule )
-      puts "[ ] add action/rule id: #{ ruleId }" if $_VERBOSE
-      addScript( ruleId, action )
+    def add( ruleId, script, rule )
+      puts "[ ] add script/rule id: #{ ruleId }" if $_VERBOSE
+      addScript( ruleId, script )
       addRule( ruleId, rule )
     end
 
     # Drb
     #
     def remove( ruleId )
-      puts "[ ] remove action/rule id: #{ ruleId }" if $_VERBOSE
+      puts "[ ] remove script/rule id: #{ ruleId }" if $_VERBOSE
       removeRule( ruleId )
       removeScript( ruleId )
     end
 
     def clear
-      @actions = {}
+      @scripts = {}
       @rules = {}
       @queue = []
     end
@@ -132,7 +132,7 @@ module Licht
     def status
       # TODO returns junk
       return @rules.collect { |id, rule|
-        "  #{id}:\n" +  @actions[id].to_str
+        "  #{id}:\n" +  @scripts[id].to_str
       }.join( "\n" )
     end
 
@@ -155,15 +155,17 @@ module Licht
       puts "[ ] wakeup at #{ time }" if $_VERBOSE
       #p @queue
 
-      # queue actions
+      # queue scripts
       @rules.each { |id, rule| 
         if rule.apply(time) 
-          action = @actions[id]
+          p rule
+          script = @scripts[id]
           puts "[=] executing rule #{id}"
+          p script
           # queue actions if this is a actionstack
-          #   or clear queue if this is a queue clear action
-          if action.respond_to?( 'actions' )
-            action.actions.each { |a| 
+          #   or clear queue if this is a queue clear rule
+          if script.respond_to?( 'actions' )
+            script.actions.each { |a| 
               # put action in queue
               @queue << { :at => time + a.delay, :action => a }
               # queue appropiate stop action in delay+duration s if duration > 0
@@ -172,7 +174,7 @@ module Licht
               end
             }
           else
-            # this is a ClearQueueAction
+            # this is a RuleClearQueue
             @queue = []
             break
           end

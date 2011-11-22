@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << './lib'
+require 'libconfig'
+Licht::Config::setup
+
 require "drb"
 require 'lichtdaemon'
 require 'lichtscript'
@@ -31,20 +34,20 @@ EOF
 
   licht1 = Licht::Script.load( script1 )
   obj.addScript "one", licht1
-  obj.addRule "one", Licht::Rule::ActionRuleInterval.new( 12 )
+  obj.addRule "one", Licht::Rule::RuleInterval.new( 12 )
   #sleep 5
 
   licht2 = Licht::Script.load( script2 )
   obj.addScript "two", licht2
-  obj.addRule "two", Licht::Rule::ActionRulePiT.new( Time.now.to_i + 4 )
-  #sleep 7
+  obj.addRule "two", Licht::Rule::RulePiT.new( Time.now.to_i + 4 )
+  sleep 7
 
   #obj.remove( "two" )
-  sleep 10
+  #sleep 10
 
-  #obj.addScript "clear", Licht::Rule::ClearQueueAction.new
-  #obj.addRule "clear", Licht::Rule::ActionRulePiT.new( Time.now.to_i + 10 )
-  #sleep 5
+  obj.addScript "clear", Licht::Rule::RuleClearQueue.new
+  obj.addRule "clear", Licht::Rule::RulePiT.new( Time.now.to_i + 10 )
+  sleep 5
 
   puts obj.status
   

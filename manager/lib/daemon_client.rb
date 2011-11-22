@@ -31,13 +31,13 @@ module Webapp
       scriptObj = Licht::Script.load rule.script.text
       case rule.type
       when 'clear'
-        ruleObj = Licht::Rule::ClearQueueAction.new
+        ruleObj = Licht::Rule::RuleClearQueue.new
       when 'interval'
-        ruleObj = Licht::Rule::ActionRuleInterval.new( rule.interval.to_i, rule.chance.to_i )
+        ruleObj = Licht::Rule::RuleInterval.new( rule.interval.to_i, rule.chance.to_i )
       when 'pit'
-        ruleObj = Licht::Rule::ActionRulePiT.new( rule.execute_at, rule.chance.to_i )
+        ruleObj = Licht::Rule::RulePiT.new( rule.execute_at, rule.chance.to_i )
       when 'tod'
-        ruleObj = Licht::Rule::ActionRuleDaytime.new( rule.execute_at, rule.chance.to_i )
+        ruleObj = Licht::Rule::RuleDaytime.new( rule.execute_at, rule.chance.to_i )
       end
       begin
         @client.add rule.id, scriptObj, ruleObj

@@ -4,9 +4,9 @@ require 'libconfig'
 Licht::Config::setup
 
 require 'lichtaction'
-rule1 = Licht::Rule::ActionRuleInterval.new( 12 )
-rule2 = Licht::Rule::ActionRulePiT.new( Time.now.to_i )
-rule3 = Licht::Rule::ActionRuleDaytime.new( '18:00' )
+rule1 = Licht::Rule::RuleInterval.new( 12 )
+rule2 = Licht::Rule::RulePiT.new( Time.now.to_i )
+rule3 = Licht::Rule::RuleDaytime.new( '18:00' )
 rule1.apply( Time.now.to_i )
 rule2.apply( Time.now.to_i )
 rule3.apply( Time.now.to_i )

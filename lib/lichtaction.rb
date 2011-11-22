@@ -148,18 +148,18 @@ module Licht
   end
 
   module Rule
-    # Clear Queue Action
+    # Clear Queue Rule
     # 
-    class ClearQueueAction
+    class RuleClearQueue
       # contains nothing really
       def to_str
-        return "clear queue action"
+        return "      clear queue action"
       end
     end
 
     # When to execute the action
     #
-    class ActionRuleInterval
+    class RuleInterval
       def initialize( interval=5, chance=100 )
         @interval = interval
         @chance = chance
@@ -177,7 +177,7 @@ module Licht
 
     # Point in Time
     #
-    class ActionRulePiT
+    class RulePiT
       def initialize( time, chance=100 )
         @time = time
         @chance = chance
@@ -194,7 +194,7 @@ module Licht
 
     # Daily
     #
-    class ActionRuleDaytime
+    class RuleDaytime
       def initialize( time='18:00', chance=100 )
         a = time.split /:/
         @hour = a[0]
