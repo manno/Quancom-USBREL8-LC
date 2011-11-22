@@ -153,7 +153,7 @@ module Licht
       @rules.each { |id, rule| 
         if rule.apply(time) 
           action = @actions[id]
-          puts "[=] hit #{id}"
+          puts "[=] executing rule #{id}"
           # queue actions if this is a actionstack
           #   or clear queue if this is a queue clear action
           if action.respond_to?( 'actions' )
