@@ -207,10 +207,10 @@ module Licht
 
     def queue_add_action( time, a )
       # put action in queue
-      @queue << { :at => time + a.delay, :action => a }
+      @queue << { :at => time + a.delay, :action => a, :status => "normal" }
       # queue appropiate stop action in delay+duration s if duration > 0
       if a.duration > 0
-        @queue << { :at => time + a.delay + a.duration, :action => a.invert }
+        @queue << { :at => time + a.delay + a.duration, :action => a.invert, :status => "inverted" }
       end
     end
 
@@ -232,7 +232,7 @@ module Licht
           puts "[ ] QAPI card open success (#{handle})" if $_VERBOSE
           todo.each { |i|
             action = @queue[i][:action]
-            puts "[=] execute QAPI action" if $_VERBOSE
+            puts "[=] execute QAPI action (#{@queue[i][:status]})" if $_VERBOSE
             puts action.to_str if $_VERBOSE
             action.execute( handle )
             action.log_execute( @logger )
