@@ -20,6 +20,9 @@ turn on Bathroom in 1 hour
 set relay to output 1, Bathroom, output 2
 EOF
 
+script = File.open('script').readlines
+#script[-1].chomp!
+script = script.join
 
 licht = Licht::Script.load( script )
 

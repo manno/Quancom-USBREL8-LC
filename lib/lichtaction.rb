@@ -204,6 +204,9 @@ module Licht
           return true
         end
       end
+      def next( time )
+        Time.at( time+@interval )
+      end
     end
 
     # Point in Time
@@ -220,6 +223,9 @@ module Licht
         if p < @chance and  difference < 2 and difference > -2
           return true
         end
+      end
+      def next( time )
+        Time.at( @time+time )
       end
     end
 
@@ -244,8 +250,12 @@ module Licht
           return true
         end
       end
+      def next( time )
+        t = Time.at time
+        next_time = Time.new t.year, t.month, t.mday, @hour, @minute, 0
+        Time.at( next_time.to_i - time )
+      end
     end
-    
   end
 
 end

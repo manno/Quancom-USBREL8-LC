@@ -1,0 +1,10 @@
+!!!
+%html
+  %head
+    %title Relay Control
+    %link(rel="stylesheet" href="styles.css?#{Time.now.to_i}")
+  %body
+    #content
+      =yield
+    %p
+    %p{:style => "font-size:small;"} version 0.1

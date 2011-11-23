@@ -1,7 +1,7 @@
 %h2 Edit Script
 %form{:method => 'post', :action => "/script#{ @script ? '/'+ @script.id.to_s : '' }"}
   %fieldset
-    %ul{:style => 'list-style: none;'}
+    %ul
       %li
         %label{:for => "script[name]"} Name
         %input{:type => "textbox", :name => "script[name]", :value => @script.name}
@@ -9,11 +9,11 @@
       %li
         %label{:for => "script[text]"} Text
         %textarea{:name => "script[text]", :cols => 80, :rows => 25}=  @script.text
-    %input{:type => :submit, :name => 'submit', :value => "Cancel"}
     %input{:type => :submit, :name => 'submit', :value => "Submit"}
+    %input{:type => :submit, :name => 'submit', :value => "Cancel"}
 %h2 Help
 %p(id="script_edit_help")
-  %table{:width => "80%", :style => "border: 1px solid"}
+  %table
     %tr
       %th Action
       %th Syntax

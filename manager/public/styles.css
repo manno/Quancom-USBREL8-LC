@@ -4,3 +4,21 @@
 
 .success { color: green; }
 .error { color: red; }
+
+.on { background-color: green; }
+.off { background-color: red; }
+
+table#relays { width: 50%; padding: 10px; border-spacing: collapse; border-spacing: 0px; }
+
+table { border: 1px solid; width: 95%; padding: 10px; }
+table th { text-align: left; }
+table tr { text-align: left; }
+
+fieldset { width: 75%; }
+fieldset ul { list-style: none; }
+
+fieldset label { font-weight: bold; }
+
+input[type=submit] { float: right; padding: 0px 10px 0px 10px; margin: 0px 10px 0px 10px; }
+
+a { padding 5px; }

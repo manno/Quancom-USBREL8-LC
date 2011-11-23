@@ -1,5 +1,5 @@
 %h2 Available Scripts
-%table{:width => "80%", :style => "border: 1px solid"}
+%table
   %tr
     %th name
     %th created
@@ -11,6 +11,7 @@
         %td= row.created_at.strftime("%Y-%m-%d %H:%M:%S")
         %td
           %a{:href=>"/rule/assign/#{@rule.id}/#{row.id}"} assign
-%a(href="/form/script") create new script
 %a(href="/") back to index
+|
+%a(href="/form/script") create new script
 

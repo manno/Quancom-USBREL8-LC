@@ -5,7 +5,7 @@ module Webapp
 
     get '/form' do
       @data = {
-        :type => 'interval',
+        :type => 'tod',
         :interval_chance => '100',
         :interval_interval => '15',
         :pit_chance => '100',

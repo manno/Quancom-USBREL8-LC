@@ -1,65 +1,70 @@
-!!!
-%html
-  %head
-    %title Relay Steuerung
-    %link(rel="stylesheet" href="styles.css?#{Time.now.to_i}")
-  %body
-    %h1 Qualcom Relay Steuerung
-    %p
-      %p{:class => @message_style }= @message
+%h1 Quancom Relay Control
+%p
+  %p{:class => @message_style }= @message
 
-    %h2 Relays
-    %table{:width => "80%", :style => "border: 1px solid"}
-      %tr
-        - @relays.each do |id,state|
-          %th= id
-      %tbody
-        %tr{ :align => "center" }
-          - @relays.each do |id,state|
-            %td= state
-    %a(href='/status') Show extended Status
+%h2 Current Relay Status
+%table{ :id => 'relays' }
+  %tr
+    %td relay
+    - @relays.each do |id,state|
+      - if state
+        %td{ :class => 'on' }= id
+      -else
+        %td{ :class => 'off' }= id
+  %tbody
+    %tr
+      %td state
+      - @relays.each do |id,state|
+        - if state
+          %td{ :class => 'on' } on
+        -else
+          %td{ :class => 'off' } off
 
-    %h2 Configured Rules
-    %table{:width => "80%", :style => "border: 1px solid"}
+%h2 Configured Rules
+%table
+  %tr
+    %th type
+    %th active
+    %th script
+    %th next
+    %th created
+    %th actions
+  %tbody
+    - @rules.each do |row|
       %tr
-        %th type
-        %th active
-        %th script
-        %th created
-        %th actions
-      %tbody
-        - @rules.each do |row|
-          %tr
-            %td= type_to_name row.type
-            %td= row.active
-            %td= row.script ? row.script.name : '-'
-            %td= row.created_at.strftime("%Y-%m-%d %H:%M:%S")
-            %td 
-              %a(href="/rule/form/#{row.id}") edit
-              |
-              %a(href="/rule/form/delete/#{row.id}") delete
-              |
-              %a(href="/rule/form/assign/#{row.id}") assign a script
-              |
-              %a(href="/rule/toggle/#{row.id}") #{row.active ? "deactivate" : "activate"}
-    %a(href="/rule/form") create new rule
+        %td= type_to_name row.type
+        %td= row.active
+        %td= row.script ? row.script.name : '-'
+        %td
+        %td= row.created_at.strftime("%Y-%m-%d %H:%M")
+        %td 
+          %a(href="/rule/form/#{row.id}") edit
+          |
+          %a(href="/rule/form/delete/#{row.id}") delete
+          |
+          %a(href="/rule/form/assign/#{row.id}") assign a script
+          |
+          %a(href="/rule/toggle/#{row.id}") #{row.active ? "deactivate" : "activate"}
+%a(href="/rule/form") create new rule
+|
+%a(href='/status') Show extended Status
 
-    %h2 Available Scripts
-    %table{:width => "80%", :style => "border: 1px solid"}
+%h2 Available Scripts
+%table
+  %tr
+    %th name
+    %th content
+    %th created
+    %th actions
+  %tbody
+    - @scripts.each do |row|
       %tr
-        %th name
-        %th content
-        %th created
-        %th actions
-      %tbody
-        - @scripts.each do |row|
-          %tr
-            %td= row.name
-            %td= row.text[0..60]
-            %td= row.created_at.strftime("%Y-%m-%d %H:%M:%S")
-            %td
-              %a(href="/script/form/#{row.id}") edit
-              %a(href="/script/form/delete/#{row.id}") delete
-    %a(href="/script/form") create new script
+        %td= row.name
+        %td= row.text[0..60]
+        %td= row.created_at.strftime("%Y-%m-%d %H:%M")
+        %td
+          %a(href="/script/form/#{row.id}") edit
+          %a(href="/script/form/delete/#{row.id}") delete
+%a(href="/script/form") create new script
 
 
