@@ -28,8 +28,8 @@ class MainWebApp < Sinatra::Base
 
   # list all rules, scripts and relays
 	get '/' do
-    @rules = Rule.all
-    @scripts = Script.all
+    @rules = Rule.all( :order => [ :active.desc, :script_id.desc, :execute_at.desc, :type.desc ] )
+    @scripts = Script.all( :order => [ :name.asc, :created_at.desc ] )
 
     @relays = @daemon_client.getRelayState
     @daemon_client.synchronize @rules

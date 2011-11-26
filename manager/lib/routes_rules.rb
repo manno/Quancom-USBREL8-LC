@@ -4,14 +4,16 @@ module Webapp
     # == FORMS
 
     get '/form' do
+      time = Time.now
+      time += 15*60
       @data = {
         :type => 'tod',
         :interval_chance => '100',
         :interval_interval => '15',
         :pit_chance => '100',
-        :pit_execute_at => '2010-12-31 18:00',
+        :pit_execute_at => time.strftime("%Y-%m-%d %H:%M"),
         :tod_chance => '100',
-        :tod_execute_at => '18:00',
+        :tod_execute_at => time.strftime( "%H:%M" )
       }
       haml :rule_edit
     end
@@ -29,7 +31,7 @@ module Webapp
 
     get '/form/assign/:id' do
       @rule = Rule.get params[:id]
-      @scripts = Script.all
+      @scripts = Script.all( :order => [ :name.asc, :created_at.desc ] )
       haml :rule_assign
     end
 

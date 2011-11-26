@@ -6,9 +6,9 @@ module Webapp
       when 'interval'
         "Interval"
       when 'pit'
-        "Point in Time"
+        "Specific Date"
       when 'tod'
-        "Time of Day"
+        "Daily"
       else
         ""
       end

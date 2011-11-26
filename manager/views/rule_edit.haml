@@ -6,7 +6,7 @@
     %ul
       %li
         %input{:type => "radio", :name => "data[type]", :value => "tod", :checked => @data[:type] == 'tod'}
-        %label{:for => "type"} Time of Day Rule
+        %label{:for => "type"} Daily
         %p Executed every day at the same time.
         %table
           %tr
@@ -17,11 +17,11 @@
             %td
               %label{:for => "data[tod_execute_at]"} Time
             %td
-              %input{:type => "textbox", :name => "data[tod_execute_at]", :value => @data[:tod_execute_at]} 
+              %input{:type => "textbox", :name => "data[tod_execute_at]", :value => @data[:tod_execute_at]} as hh:mm
       %br
       %li
         %input{:type => "radio", :name => "data[type]", :value => "pit", :checked => @data[:type] == 'pit'}
-        %label{:for => "type"} Point in Time Rule
+        %label{:for => "type"} Specific Date
         %p Executed at a specific date and time
         %table
           %tr
@@ -32,7 +32,7 @@
             %td
               %label{:for => "data[pit_execute_at]"} Time and Date
             %td
-              %input{:type => "textbox", :name => "data[pit_execute_at]", :value => @data[:pit_execute_at]} 
+              %input{:type => "textbox", :name => "data[pit_execute_at]", :value => @data[:pit_execute_at]} as YY:MM:DD hh:mm
       %br
       %li
         %input{:type => "radio", :name => "data[type]", :value => "interval", :checked => @data[:type] == 'interval'}

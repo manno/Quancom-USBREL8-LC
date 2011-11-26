@@ -26,6 +26,8 @@ module Webapp
 
       property :created_at, DateTime
 
+      # explicitly list id for use in sql order statements
+      property :script_id, Integer
       belongs_to :script, :required => false
 
     end
