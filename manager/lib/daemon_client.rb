@@ -56,6 +56,24 @@ module Webapp
       end
     end
 
+    def executeAction( type, relay=0 )
+      case type
+      when :on
+        action  = Licht::Script::QapiAction.new( :on, [relay] )
+      when :off
+        action  = Licht::Script::QapiAction.new( :off, [relay] )
+      when :set_on
+        action  = Licht::Script::QapiAction.new( :set, ['ALL'] )
+      when :set_off
+        action  = Licht::Script::QapiAction.new( :set, ['NONE'] )
+      end
+      begin
+        @client.executeAction( action )
+      rescue DRb::DRbConnError
+        STDERR.puts "[!] Failed to connect to drb daemon #{@url}" if $DEBUG
+      end
+    end
+
     def status
       begin
         @client.status

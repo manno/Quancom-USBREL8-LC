@@ -58,7 +58,11 @@ module Licht
 
     # for drb, set Output 1..8
     def setOut( i, state )
-      state = state == 1
+      if state == 1
+        state = true
+      elsif state == 0
+        state = false
+      end
       puts "set state #{state} for #{i}"
       @builder["checkbutton#{i}"].active = state
     end
@@ -71,8 +75,5 @@ Gtk.init
 @gui = Licht::Simulator::Controller.new( resource_path )
 @gui.setup
 @gui.builder['window1'].show
-Thread.start {
-  @gui.run
-}
 Gtk.main
 

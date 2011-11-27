@@ -102,6 +102,20 @@ module Licht
       @thread
     end
 
+    def executeAction(action)
+      handle = QAPI.openCard QAPI::USBREL8LC, @cardNumber
+      if handle > 0
+        puts "[ ] QAPI card open success (#{handle})" if $_VERBOSE
+        puts "[=] directly execute QAPI action" if $_VERBOSE
+        puts action.to_str if $_VERBOSE
+        action.execute( handle )
+        action.log_execute( @logger )
+        QAPI.closeCard handle
+      else
+        puts "[!] QAPI card open failed!"
+      end
+    end
+
     # add Script::QapiActionStack
     #
     def addScript( ruleId, script )
@@ -189,6 +203,7 @@ module Licht
       @rules.each { |id, rule| 
         if rule.apply(time) 
           script = @scripts[id]
+          pp script if $DEBUG
           puts "[=] executing rule #{id}"
           # queue actions if this is an actionstack
           #   or add single action if this is an action
@@ -198,6 +213,7 @@ module Licht
           elsif script.respond_to?( 'execute' )
             queue_add_action time, script
           else
+            STDERR.puts "ClearQueue happened"
             # this is a ClearQueueAction
             @queue = []
             break

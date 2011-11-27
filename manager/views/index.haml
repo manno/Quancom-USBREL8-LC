@@ -9,7 +9,7 @@
     - @relays.each do |id,state|
       - if state
         %td{ :class => 'on' }= id
-      -else
+      - else
         %td{ :class => 'off' }= id
   %tbody
     %tr
@@ -17,8 +17,20 @@
       - @relays.each do |id,state|
         - if state
           %td{ :class => 'on' } on
-        -else
+        - else
           %td{ :class => 'off' } off
+    %tr
+      %td action
+      - @relays.each do |id,state|
+        - if state
+          %td
+            %a(href="/relay/off/#{id}") set off
+        - else
+          %td
+            %a(href="/relay/on/#{id}") set on
+%a(href="/relay/all_off") force all relays off
+|
+%a(href='/relay/all_on') force all relays on
 
 %h2 Configured Rules
 %table

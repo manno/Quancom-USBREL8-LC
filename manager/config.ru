@@ -10,6 +10,7 @@ Licht::Config::setup '..'
 require './MainWebApp'
 require "./lib/routes_rules"
 require "./lib/routes_scripts"
+require "./lib/routes_relays"
 
 map "/" do
   run MainWebApp
@@ -21,4 +22,8 @@ end
 
 map "/script" do
   run Webapp::RoutesScripts
+end
+
+map "/relay" do
+  run Webapp::RoutesRelays
 end

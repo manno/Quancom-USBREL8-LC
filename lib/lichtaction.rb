@@ -11,6 +11,7 @@ else
   require 'quancom-ffi'
 end
 require 'pp'
+require 'date'
 
 module Licht
 
@@ -20,7 +21,7 @@ module Licht
     #
     class QapiAction
 
-      def initialize( type, outputs, delay, duration )
+      def initialize( type, outputs, delay=0, duration=0 )
         @type = type
         @outputs = []
         parse_outputs( outputs )
@@ -39,6 +40,9 @@ module Licht
           case o
           when 'ALL'
             @outputs = [ QAPI::ALL ]
+            break
+          when 'NONE'
+            @outputs = [ QAPI::NONE ]
             break
           else
             val =  1 << (o-1)
@@ -195,7 +199,7 @@ module Licht
         @interval = interval
         @chance = chance
         @last = Time.now.to_i
-        puts "[!] Action interval: first hit at #{@last+@interval}"
+        puts "[!] Action interval: first hit at #{@last+@interval}" if $_VERBOSE
       end
       def apply( time )
         p = rand(100)
@@ -212,14 +216,17 @@ module Licht
     # Point in Time
     #
     class RulePiT
-      def initialize( time, chance=100 )
+      def initialize( time="2011.12.31 23:59", chance=100 )
         @time = time
         @chance = chance
-        puts "[!] Action PiT: first hit at #{@time}"
+        puts "[!] create action PiT: first hit at #{@time}" if $_VERBOSE
       end
       def apply( time )
+        t = Time.at time
+        next_time = DateTime.strptime( @time + " CET", "%Y.%m.%d %H:%M %z" ).to_time
+        #puts "[=] pitcheck #{next_time} against #{t}" if $_VERBOSE
         p = rand(100)
-        difference = @time - time
+        difference = next_time - t
         if p < @chance and  difference < 2 and difference > -2
           return true
         end
@@ -237,15 +244,14 @@ module Licht
         @hour = a[0]
         @minute = a[1]
         @chance = chance
-        puts "[!] Action ToD: every day at #{@hour}:#{@minute}"
+        puts "[!] create action ToD: every day at #{@hour}:#{@minute}" if $_VERBOSE
       end
       def apply( time )
         t = Time.at time
         next_time = Time.new t.year, t.month, t.mday, @hour, @minute, 0
-        puts "[=] check #{next_time} against #{t}" if $_VERBOSE
-
+        #puts "[=] todcheck #{next_time} against #{t}" if $_VERBOSE
         p = rand(100)
-        difference = next_time.to_i - time
+        difference = next_time - t
         if p < @chance and  difference < 2 and difference > -2
           return true
         end
