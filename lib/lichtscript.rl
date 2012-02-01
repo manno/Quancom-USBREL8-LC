@@ -7,10 +7,21 @@ $DEBUG=false
 module Licht
   module Parser
 
+    class LabelLookup < Hash
+      def [](a)
+        res = super(a)
+        if res.nil?
+          raise "parser error, label '#{a}' doesn't exist"
+        else
+          res
+        end
+      end
+    end
+
     def Parser.setup( c )
       @controller = c
       # Tokens by script
-      @label_lookup = {}
+      @label_lookup = LabelLookup.new
     end
 
     %%{

@@ -32,12 +32,15 @@ module Licht
       attr_writer :type
 
       def parse_outputs( outputs )
+        return if outputs.nil? or outputs.empty?
         # translate relay number to bit position
         # 1 -> 0x1
         # 3 -> 0x4
         # 8 -> 128
         outputs.each { |o|
           case o
+          when nil
+            raise "not a valid output channel (nil)"
           when 'ALL'
             @outputs = [ QAPI::ALL ]
             break
