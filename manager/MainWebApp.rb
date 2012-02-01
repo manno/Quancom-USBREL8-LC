@@ -6,6 +6,7 @@ require 'pp'
 
 require "./lib/helpers"
 require "./lib/daemon_client"
+require "./lib/model"
 
 =begin
 
