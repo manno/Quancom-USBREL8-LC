@@ -26,10 +26,15 @@ module Webapp
         @script.name = params[:script][:name]
         @script.text = clean_script params[:script][:text]
         @script.created_at = Time.now
-        @script.save
-        set_message "successfully created script #{@script.id}.", 'success'
+        if @script.save
+          set_message "successfully created script #{@script.id}.", 'success'
+          redirect '/'
+        else
+          haml :script_edit
+        end
+      else
+        redirect '/'
       end
-      redirect '/'
     end
 
     post '/:id' do
@@ -38,11 +43,16 @@ module Webapp
         @script.name = params[:script][:name]
         @script.text = clean_script params[:script][:text]
         @script.created_at = Time.now
-        @script.save
-        daemon_disable_active_script @script
-        set_message "successfully updated script #{@script.id}."
+        if @script.save
+          daemon_disable_active_script @script
+          set_message "successfully updated script #{@script.id}."
+          redirect '/'
+        else
+          haml :script_edit
+        end
+      else
+        redirect '/'
       end
-      redirect '/'
     end
 
     #delete '/script/:id' do

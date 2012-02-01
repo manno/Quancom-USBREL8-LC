@@ -1,4 +1,6 @@
 %h2 Edit Script
+- @script.errors.each do |e| 
+  %p{:class=>'error'}= e.join
 %form{:method => 'post', :action => "/script#{ @script ? '/'+ @script.id.to_s : '' }"}
   %fieldset
     %ul

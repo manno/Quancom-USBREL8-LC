@@ -1,6 +1,11 @@
 require 'data_mapper'
 require 'pp'
 
+$LOAD_PATH << '../lib'
+require 'libconfig'
+Licht::Config::setup '..'
+require 'lichtscript'
+
 module Webapp
   module  Model
 
@@ -12,6 +17,15 @@ module Webapp
       property :created_at, DateTime
 
       has n, :rules
+
+      validates_with_block :text do
+        begin
+         Licht::Script.load( @text ) 
+         true
+        rescue => ex
+          [false, ex.message]
+        end
+      end
     end
 
     class Rule
