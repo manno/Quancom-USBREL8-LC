@@ -1,4 +1,6 @@
 $LOAD_PATH << '../lib'
+require 'libconfig'
+Licht::Config::setup '..'
 require 'lichtaction'
 require 'lichtscript'
 require 'lichtdaemon'
