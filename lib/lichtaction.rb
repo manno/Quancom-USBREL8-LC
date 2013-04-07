@@ -223,7 +223,7 @@ module Licht
       end
       def apply( time )
         t = Time.at time
-        next_time = DateTime.strptime( @time + " CET", "%Y-%m-%d %H:%M %z" ).to_time
+        next_time = DateTime.strptime( @time + " #{t.zone}", "%Y-%m-%d %H:%M %z" ).to_time
         #puts "[=] pitcheck #{next_time} against #{t}" if $_VERBOSE
         p = rand(100)
         difference = next_time - t
