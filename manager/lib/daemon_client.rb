@@ -33,7 +33,12 @@ module Webapp
       when 'interval'
         ruleObj = Licht::Rule::RuleInterval.new( rule.interval.to_i, rule.chance.to_i )
       when 'pit'
-        ruleObj = Licht::Rule::RulePiT.new( rule.execute_at, rule.chance.to_i )
+        if check_datetime(rule)
+          ruleObj = Licht::Rule::RulePiT.new( rule.execute_at, rule.chance.to_i )
+        else
+          STDERR.puts "[!] failed to parse rules date #{rule.execute_at}"
+          return
+        end
       when 'tod'
         ruleObj = Licht::Rule::RuleDaytime.new( rule.execute_at, rule.chance.to_i )
       end
@@ -119,6 +124,15 @@ module Webapp
           add rule
         end
       }
+    end
+
+    def check_datetime(rule)
+      begin
+         DateTime.strptime( rule.execute_at + " CET", "%Y-%m-%d %H:%M %z" ).to_time
+      rescue
+        return false
+      end
+      return true
     end
 
 

@@ -216,14 +216,14 @@ module Licht
     # Point in Time
     #
     class RulePiT
-      def initialize( time="2011.12.31 23:59", chance=100 )
+      def initialize( time="2011-12-31 23:59", chance=100 )
         @time = time
         @chance = chance
         puts "[!] create action PiT: first hit at #{@time}" if $_VERBOSE
       end
       def apply( time )
         t = Time.at time
-        next_time = DateTime.strptime( @time + " CET", "%Y.%m.%d %H:%M %z" ).to_time
+        next_time = DateTime.strptime( @time + " CET", "%Y-%m-%d %H:%M %z" ).to_time
         #puts "[=] pitcheck #{next_time} against #{t}" if $_VERBOSE
         p = rand(100)
         difference = next_time - t

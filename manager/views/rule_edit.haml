@@ -32,7 +32,7 @@
             %td
               %label{:for => "data[pit_execute_at]"} Time and Date
             %td
-              %input{:type => "textbox", :name => "data[pit_execute_at]", :value => @data[:pit_execute_at]} as YY:MM:DD hh:mm
+              %input{:type => "textbox", :name => "data[pit_execute_at]", :value => @data[:pit_execute_at]} as Y-m-d HH:MM
       %br
       %li
         %input{:type => "radio", :name => "data[type]", :value => "interval", :checked => @data[:type] == 'interval'}
