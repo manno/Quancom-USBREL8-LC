@@ -27,7 +27,8 @@ module Webapp
     end
 
     def add( rule )
-      return if rule.script.nil?
+      return  { :valid => false, :message => "failed. missing script on rule #{rule.id}." } if rule.script.nil?
+
       scriptObj = Licht::Script.load rule.script.text
       case rule.type
       when 'interval'
@@ -37,7 +38,7 @@ module Webapp
           ruleObj = Licht::Rule::RulePiT.new( rule.execute_at, rule.chance.to_i )
         else
           STDERR.puts "[!] failed to parse rules date #{rule.execute_at}"
-          return
+          return  { :valid => false, :message => "failed to parse date #{rule.execute_at} on rule #{rule.id}." }
         end
       when 'tod'
         ruleObj = Licht::Rule::RuleDaytime.new( rule.execute_at, rule.chance.to_i )
@@ -47,6 +48,8 @@ module Webapp
       rescue DRb::DRbConnError
         STDERR.puts "[!] Failed to connect to drb daemon #{@url}" if $DEBUG
       end
+
+      return  { :valid => true, :message => "activated rule #{rule.id}." }
     end
 
     def remove( rule )

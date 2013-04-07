@@ -91,8 +91,12 @@ module Webapp
         set_message "deactivated rule #{@rule.id}"
         @daemon_client.remove @rule
       else
-        set_message "activated rule #{@rule.id}"
-        @daemon_client.add @rule
+        status = @daemon_client.add @rule
+        if status[:valid]
+          set_message status[:message], 'success'
+        else
+          set_message status[:message], 'error'
+        end
       end
       @rule.active = ! @rule.active
       @rule.save
