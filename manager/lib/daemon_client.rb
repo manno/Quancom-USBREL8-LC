@@ -87,6 +87,14 @@ module Webapp
       end
     end
 
+    def clear_queue
+      begin
+        @client.clear_queue
+      rescue DRb::DRbConnError
+        STDERR.puts "[!] Failed to connect to drb daemon #{@url}" if $DEBUG
+      end
+    end
+
     def synchronize( rules )
       # TODO filter in db, not in query results
       rules_db = rules.select { |rule| rule.active }.collect { |rule| rule.id }

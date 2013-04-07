@@ -44,6 +44,12 @@ class MainWebApp < Sinatra::Base
     haml :status
   end
 
+  get '/clear' do
+    set_message "clearing queued actions"
+    @daemon_client.clear_queue
+    redirect '/'
+  end
+
   get '/error' do
     get_message
     haml :error

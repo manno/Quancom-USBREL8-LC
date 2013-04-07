@@ -165,6 +165,12 @@ module Licht
 
     # Drb
     #
+    def clear_queue
+      @queue = []
+    end
+
+    # Drb
+    #
     def status
       # TODO returns junk
       return @rules.collect { |id, rule|
