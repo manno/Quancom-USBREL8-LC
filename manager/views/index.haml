@@ -76,7 +76,7 @@
     - @scripts.each do |row|
       %tr
         %td= row.name
-        %td= row.text[0..60]
+        %td= row.text[0..60].split(/\n/).join(';')
         %td= row.created_at.strftime("%Y-%m-%d %H:%M")
         %td
           %a(href="/script/form/#{row.id}") edit
