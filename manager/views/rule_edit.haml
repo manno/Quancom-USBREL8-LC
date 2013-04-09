@@ -1,53 +1,54 @@
 %h2 Edit Rule
 %p The rule will be set inactive after creation. You need to activate it to load it onto the controller.
 %form{:method => 'post', :action => "/rule#{ @rule ? '/'+ @rule.id.to_s : '' }"}
-  
   %fieldset
-    %ul
-      %li
-        %input{:type => "radio", :name => "data[type]", :value => "tod", :checked => @data[:type] == 'tod'}
-        %label{:for => "type"} Daily
-        %p Executed every day at the same time.
-        %table
-          %tr
-            %td
-              %label{:for => "data[tod_chance]"} Chance
-            %td
-              %input{:type => "textbox", :name => "data[tod_chance]", :value => @data[:tod_chance]} %
-            %td
-              %label{:for => "data[tod_execute_at]"} Time
-            %td
-              %input{:type => "textbox", :name => "data[tod_execute_at]", :value => @data[:tod_execute_at]} as hh:mm
-      %br
-      %li
-        %input{:type => "radio", :name => "data[type]", :value => "pit", :checked => @data[:type] == 'pit'}
-        %label{:for => "type"} Specific Date
-        %p Executed at a specific date and time
-        %table
-          %tr
-            %td
-              %label{:for => "data[pit_chance]"} Chance
-            %td
-              %input{:type => "textbox", :name => "data[pit_chance]", :value => @data[:pit_chance]} %
-            %td
-              %label{:for => "data[pit_execute_at]"} Time and Date
-            %td
-              %input{:type => "textbox", :name => "data[pit_execute_at]", :value => @data[:pit_execute_at]} as Y-m-d HH:MM
-      %br
-      %li
-        %input{:type => "radio", :name => "data[type]", :value => "interval", :checked => @data[:type] == 'interval'}
-        %label{:for => "type"} Interval Rule
-        %p Executed regulary
-        %table
-          %tr
-            %td
-              %label{:for => "data[interval_chance]"} Chance
-            %td
-              %input{:type => "textbox", :name => "data[interval_chance]", :value => @data[:interval_chance]} %
-            %td
-              %label{:for => "data[interval_interval]"} Interval in seconds
-            %td
-              %input{:type => "textbox", :name => "data[interval_interval]", :value => @data[:interval_interval]} s
-    %input{:type => :submit, :name => 'submit', :value => "Submit"}
-    %input{:type => :submit, :name => 'submit', :value => "Cancel"}
+    .row
+      .span8
+        %label.radio{:for => "type"} 
+          Daily
+          %input{:type => "radio", :name => "data[type]", :value => "tod", :checked => @data[:type] == 'tod'}
+        %span.help-block Executed every day at the same time.
+    .row
+      .span4
+        %label{:for => "data[tod_chance]"} 
+          %input.input-small{:type => "textbox", :name => "data[tod_chance]", :value => @data[:tod_chance]}
+          Chance in %
+      .span4
+        %label{:for => "data[tod_execute_at]"}
+          %input{:type => "textbox", :name => "data[tod_execute_at]", :value => @data[:tod_execute_at]}
+          Time as hh:mm
+    .row
+      .span8
+        %label.radio{:for => "type"}
+          Specific Date
+          %input{:type => "radio", :name => "data[type]", :value => "pit", :checked => @data[:type] == 'pit'}
+        %span.help-block Executed at a specific date and time
+    .row
+      .span4
+        %label{:for => "data[pit_chance]"}
+          %input.input-small{:type => "textbox", :name => "data[pit_chance]", :value => @data[:pit_chance]}
+          Chance in %
+      .span4
+        %label{:for => "data[pit_execute_at]"} 
+          %input{:type => "textbox", :name => "data[pit_execute_at]", :value => @data[:pit_execute_at]}
+          Time and Date as Y-m-d HH:MM
+    .row
+      .span8
+        %label.radio{:for => "type"}
+          Interval Rule
+          %input{:type => "radio", :name => "data[type]", :value => "interval", :checked => @data[:type] == 'interval'}
+        %span.help-block Executed regulary
+    .row
+      .span4
+        %label{:for => "data[interval_chance]"} 
+          %input.input-small{:type => "textbox", :name => "data[interval_chance]", :value => @data[:interval_chance]}
+          Chance in %
+      .span4
+        %label{:for => "data[interval_interval]"} 
+          %input{:type => "textbox", :name => "data[interval_interval]", :value => @data[:interval_interval]}
+          Interval in seconds
+    .row
+      .span8
+        %input.submit{:type => :submit, :name => 'submit', :value => "Submit"}
+        %input.submit{:type => :submit, :name => 'submit', :value => "Cancel"}
 

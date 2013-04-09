@@ -1,3 +1,6 @@
 %h1 Error 
-  %p{:class => @message_style }= @message
-  %a(href="/") back to index
+.navbar
+  %a.btn.btn-primary(href="/") back to index
+
+%p{:class => @message_style }= @message
+

@@ -1,98 +1,107 @@
 %h2 Edit Script
-- @script.errors.each do |e| 
-  %p{:class=>'error'}= e.join
-%form{:method => 'post', :action => "/script#{ @script ? '/'+ @script.id.to_s : '' }"}
-  %fieldset
-    %ul
-      %li
-        %label{:for => "script[name]"} Name
-        %input{:type => "textbox", :name => "script[name]", :value => @script.name}
-      %br
-      %li
-        %label{:for => "script[text]"} Text
-        %textarea{:name => "script[text]", :cols => 80, :rows => 25}=  @script.text
-    %input{:type => :submit, :name => 'submit', :value => "Submit"}
-    %input{:type => :submit, :name => 'submit', :value => "Cancel"}
-%h2 Help
-%p(id="script_edit_help")
-  %table
-    %tr
-      %th Action
-      %th Syntax
-    %tr
-      %td Label a relay
-      %td label output 1 as Bathroom
-    %tr
-      %td Set relay on
-      %td turn on output 1
-    %tr
-      %td Set relay off
-      %td turn off output 8
-    %tr
-      %td Set all relays off
-      %td turn off all relays
-    %tr
-      %td Set multiple relays
-      %td turn on output 1, output 2, Bathroom
-    %tr
-      %td Set multiple relays
-      %td turn on output 1, output 2, Bathroom
-    %tr
-      %td 
-      %td turn off output 1, output 2, Bathroom
-    %tr
-      %td Apply to all relays
-      %td set relay to output 1, Bathroom, output 2
-    %tr
-      %td Delay an action
-      %td turn off all outputs in 1 minute
-    %tr
-      %td Revert action after specified time
-      %td turn on Bathroom for 45 seconds
-%h2 Examples
-%p(id="script_edit_examples")
-  %textarea{:cols => 80, :rows => 12}
-    label output 3 as Bathroom
-    turn off Bathroom
-    turn off all outputs
-    turn off all outputs in 1 minute
-    turn on output1 
-    turn on output 1 
-    turn on output 1, Bathroom, output 2
-    turn off output 1, Bathroom, output 2
-    turn on Bathroom
-    turn on Bathroom in 5 minutes for 45 seconds
-    turn on Bathroom in 1 hour 
-    set relay to output 1, Bathroom, output 2
-%h2 Syntax  
-%p(id="script_edit_syntax")
-  %pre
-    ws1 = ' '+
-    ws0 = ' '{0,}
+.row
+  .span8
+    - @script.errors.each do |e| 
+      %p{:class=>'error'}= e.join
+.row
+  .span4
+    %form{:method => 'post', :action => "/script#{ @script ? '/'+ @script.id.to_s : '' }"}
+      %fieldset
+        %ul
+          %li
+            %label{:for => "script[name]"} Name
+            %input{:type => "textbox", :name => "script[name]", :value => @script.name}
+          %br
+          %li
+            %label{:for => "script[text]"} Text
+            %textarea{:name => "script[text]", :cols => 80, :rows => 10}=  @script.text
+        %input.submit{:type => :submit, :name => 'submit', :value => "Submit"}
+        %input.submit{:type => :submit, :name => 'submit', :value => "Cancel"}
+  .span4
+    %h2 Examples
+    %p(id="script_edit_examples")
+      %textarea{:cols => 80, :rows => 12}
+        label output 3 as Bathroom
+        turn off Bathroom
+        turn off all outputs
+        turn off all outputs in 1 minute
+        turn on output1 
+        turn on output 1 
+        turn on output 1, Bathroom, output 2
+        turn off output 1, Bathroom, output 2
+        turn on Bathroom
+        turn on Bathroom in 5 minutes for 45 seconds
+        turn on Bathroom in 1 hour 
+        set relay to output 1, Bathroom, output 2
+.row
+  .span8
+    %h2 Help
+    %p(id="script_edit_help")
+      %table
+        %tr
+          %th Action
+          %th Syntax
+        %tr
+          %td Label a relay
+          %td label output 1 as Bathroom
+        %tr
+          %td Set relay on
+          %td turn on output 1
+        %tr
+          %td Set relay off
+          %td turn off output 8
+        %tr
+          %td Set all relays off
+          %td turn off all relays
+        %tr
+          %td Set multiple relays
+          %td turn on output 1, output 2, Bathroom
+        %tr
+          %td Set multiple relays
+          %td turn on output 1, output 2, Bathroom
+        %tr
+          %td 
+          %td turn off output 1, output 2, Bathroom
+        %tr
+          %td Apply to all relays
+          %td set relay to output 1, Bathroom, output 2
+        %tr
+          %td Delay an action
+          %td turn off all outputs in 1 minute
+        %tr
+          %td Revert action after specified time
+          %td turn on Bathroom for 45 seconds
+.row
+  .span8
+    %h2 Syntax  
+    %p(id="script_edit_syntax")
+      %pre
+        ws1 = ' '+
+        ws0 = ' '{0,}
 
-    output = 'output' ws0 digit+
-    label_all = 'all outputs'
-    label = alnum+
+        output = 'output' ws0 digit+
+        label_all = 'all outputs'
+        label = alnum+
 
-    relay_name = ( label | output );
-    relay_name_list_on = ( relay_name | relay_name ( ',' ws0 relay_name )* );
-    relay_name_list_off = ( label_all | ( relay_name | relay_name ( ',' ws0 relay_name )* ) )
+        relay_name = ( label | output );
+        relay_name_list_on = ( relay_name | relay_name ( ',' ws0 relay_name )* );
+        relay_name_list_off = ( label_all | ( relay_name | relay_name ( ',' ws0 relay_name )* ) )
 
-    time_unit = ( ( 'second' | 'minute' | 'hour' | 'day' ) 's'? )
+        time_unit = ( ( 'second' | 'minute' | 'hour' | 'day' ) 's'? )
 
-    time = digit+
+        time = digit+
 
-    time_delay  = 'in' ws1 time ws0 time_unit
-    time_duration = 'for' ws1 time ws0 time_unit
+        time_delay  = 'in' ws1 time ws0 time_unit
+        time_duration = 'for' ws1 time ws0 time_unit
 
-    time_selector = ( ( ws1 time_delay )? ( ws1 time_duration )? )
+        time_selector = ( ( ws1 time_delay )? ( ws1 time_duration )? )
 
-    command_name = ws0 'label' ws1 output ws1 'as' ws1 label ws0 '\n'
+        command_name = ws0 'label' ws1 output ws1 'as' ws1 label ws0 '\n'
 
-    command_on   = ws0 'turn on' ws1 relay_name_list_on time_selector ws0 '\n'
+        command_on   = ws0 'turn on' ws1 relay_name_list_on time_selector ws0 '\n'
 
-    command_off  = ws0 'turn off' ws1 relay_name_list_off time_selector ws0 '\n'
+        command_off  = ws0 'turn off' ws1 relay_name_list_off time_selector ws0 '\n'
 
-    command_set  = ws0 'set relay to' ws1 relay_name_list_on time_selector ws0 '\n'
+        command_set  = ws0 'set relay to' ws1 relay_name_list_on time_selector ws0 '\n'
 
-    main := ( /^#.*/ | command_name | command_on | command_off | command_set )
+        main := ( /^#.*/ | command_name | command_on | command_off | command_set )

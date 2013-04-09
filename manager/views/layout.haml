@@ -1,10 +1,14 @@
 !!!
 %html
   %head
-    %title Relay Control
+    %title Relay Control v0.3
+    %link(rel="stylesheet" href="/assets/css/bootstrap.css")
     %link(rel="stylesheet" href="/styles.css")
+    %link(rel="shortcut icon" href="/favicon.png")
   %body
-    #content
+    .navbar
+      .navbar-inner
+        .container
+          %a.brand(href="/") Quancom Relay Control
+    .container
       =yield
-    %p
-    %p{:style => "font-size:small;"} version 0.2

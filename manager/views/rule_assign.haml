@@ -1,5 +1,10 @@
 %h2 Available Scripts
-%table
+
+.navbar
+  %a.btn.btn-primary(href="/") back to index
+  %a.btn(href="/form/script") create new script
+
+%table.table
   %tr
     %th name
     %th created
@@ -10,8 +15,5 @@
         %td= row.name
         %td= row.created_at.strftime("%Y-%m-%d %H:%M")
         %td
-          %a{:href=>"/rule/assign/#{@rule.id}/#{row.id}"} assign
-%a(href="/") back to index
-|
-%a(href="/form/script") create new script
+          %a.btn{:href=>"/rule/assign/#{@rule.id}/#{row.id}"} assign
 
